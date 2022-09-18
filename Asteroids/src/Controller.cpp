@@ -1,6 +1,7 @@
 #include "raylib.h"
 #include "player.h"
 #include "meteor.h"
+#include "game.h"
 #include <cmath>
 
 void PlayerDraw() {
@@ -128,7 +129,7 @@ void LogicPlayer() {
 
     player.rotation = angulogrados;
 
-    if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT))
+    if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))
     {
         player.speed.x = sin(player.rotation * DEG2RAD) * playerSpeed;
         player.speed.y = cos(player.rotation * DEG2RAD) * playerSpeed;
@@ -238,6 +239,7 @@ void DrawMeteors() {
     {
         if (smallMeteor[i].active) DrawCircleV(smallMeteor[i].position, smallMeteor[i].radius, DARKBROWN);
     }
+    if (destroyedMeteorsCount == maxBigMeteors + maxMidMeteors + maxSmallMeteors) DefeatPlayer();
 }
 
 void LogicMeteor() {
@@ -297,19 +299,20 @@ void ColisionMeteors() {
 
     for (int a = 0; a < maxBigMeteors; a++)
     {
-        if (CheckCollisionCircles({ player.position.x , player.position.y }, 17, bigMeteor[a].position, bigMeteor[a].radius) && bigMeteor[a].active) {
-           // gameover = true;
+        if (CheckCollisionCircles({ player.position.x , player.position.y }, 15, bigMeteor[a].position, bigMeteor[a].radius) && bigMeteor[a].active) {
+            DefeatPlayer();
         }
+        
     }
 
     for (int a = 0; a < maxMidMeteors; a++)
     {
-        if (CheckCollisionCircles({ player.position.x , player.position.y }, 17, mediumMeteor[a].position, mediumMeteor[a].radius) && mediumMeteor[a].active) {} //gameover = true;
+        if (CheckCollisionCircles({ player.position.x , player.position.y }, 15, mediumMeteor[a].position, mediumMeteor[a].radius) && mediumMeteor[a].active) DefeatPlayer();
     }
 
     for (int a = 0; a < maxSmallMeteors; a++)
     {
-        if (CheckCollisionCircles({ player.position.x , player.position.y }, 17, smallMeteor[a].position, smallMeteor[a].radius) && smallMeteor[a].active) {} // gameover = true;
+        if (CheckCollisionCircles({ player.position.x , player.position.y }, 15, smallMeteor[a].position, smallMeteor[a].radius) && smallMeteor[a].active) DefeatPlayer();
     }
 
     for (int i = 0; i < maxShoots; i++)

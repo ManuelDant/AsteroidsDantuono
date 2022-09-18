@@ -22,6 +22,7 @@ struct Shoot {
 };
 
 const int maxShoots = 10;
+static bool hitbox = false;
 
 static Player player = { 0 };
 static Shoot shoot[maxShoots] = { 0 };
@@ -36,5 +37,7 @@ void MovePlayer();
 void ColisionWall();
 void LogicShoot();
 void LogicPlayer();
+void DefeatPlayer();
+void Restart();
 
 

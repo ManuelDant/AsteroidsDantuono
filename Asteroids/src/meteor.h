@@ -9,10 +9,6 @@ struct Meteor {
     Color color;
 };
 
-static bool gameover = false;
-static bool pause = false;
-static bool victory = false;
-
 const int speedMeteros =2;
 const int maxBigMeteors  =5;
 const int maxMidMeteors =10;

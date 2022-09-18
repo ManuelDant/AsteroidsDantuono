@@ -1,17 +1,24 @@
 #include "raylib.h"
 #include "player.h"
 #include "meteor.h"
+#include "game.h"
 #include <cmath>
 
 const int screenWidth = 1024;
 const int screenHeight = 768;
 
-void SetupGame();
-void Update();
-void DrawGame(); 
-void DrawPause();
+static bool gameover = false;
+static bool pause = false;
+static bool victory = false;
 
-void RunGame() {
+void SetupGame();
+void DrawPause();
+void Update();
+void DrawGame();
+
+
+void RunGame()
+{
     InitWindow(screenWidth, screenHeight, "Asteroids By: Manuel Dantuono");
     SetTargetFPS(60);
 
@@ -44,6 +51,23 @@ void DrawGame() {
 
 }
 
+void DefeatPlayer()
+{
+    gameover = true;
+
+}
+
+void Restart() {
+    if (!pause && gameover)
+    {
+        if (IsKeyPressed(KEY_ENTER))
+        {
+            SetupGame();
+            gameover = false;
+        }
+    }
+}
+
 void Update()
 {
     if (!gameover)
@@ -56,20 +80,17 @@ void Update()
             MovePlayer();
             ColisionWall();
             ColisionMeteors();
-            LogicMeteor();
+            LogicMeteor();   
 
-            if (destroyedMeteorsCount == maxBigMeteors + maxMidMeteors + maxSmallMeteors) victory = true;
-        }
-        else
-        {
-            if (IsKeyPressed(KEY_ENTER))
+            if (IsKeyDown(KEY_X))
             {
-                SetupGame();
-                gameover = false;
+                gameover = true;
             }
+
         }
     }
 }
+
 
 void DrawPause() {
     if (!gameover)
@@ -77,9 +98,10 @@ void DrawPause() {
         PlayerDraw();
         DrawMeteors();
 
-        if (victory) DrawText("VICTORY", screenWidth / 2 - MeasureText("VICTORY", 20) / 2, screenHeight / 2, 20, LIGHTGRAY);
+        if (victory) DrawText("VICTORIA!!", screenWidth / 2 - MeasureText("VICTORIA!!", 20) / 2, screenHeight / 2, 50, DARKPURPLE);
 
-        if (pause) DrawText("GAME PAUSED", screenWidth / 2 - MeasureText("GAME PAUSED", 40) / 2, screenHeight / 2 - 40, 40, GRAY);
+        if (pause) DrawText("Pausa! (P para reanudar)", screenWidth / 2 - MeasureText("Pausa! (P para reaunar)", 40) / 2 - 100, screenHeight / 2 - 40, 60, DARKPURPLE);
     }
-    else DrawText("PRESS [ENTER] TO PLAY AGAIN", GetScreenWidth() / 2 - MeasureText("PRESS [ENTER] TO PLAY AGAIN", 20) / 2, GetScreenHeight() / 2 - 50, 20, GRAY);
+    else DrawText("Presiona (ENTER) para volver a jugar", GetScreenWidth() / 2 - MeasureText("Presiona (ENTER) para volver a jugar", 20) / 2 - 300, GetScreenHeight() / 2 - 50, 50, RED);
+    Restart();
 }
