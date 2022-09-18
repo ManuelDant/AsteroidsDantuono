@@ -1,7 +1,7 @@
 #pragma once
 #include "raylib.h"
 
-typedef struct Player {
+struct Player {
     Vector2 position;
     Vector2 speed;
     float acceleration;
@@ -9,9 +9,9 @@ typedef struct Player {
     Vector2 Rotation;
     Vector3 collider;
     Color color;
-}Player;
+};
 
-typedef struct Shoot {
+struct Shoot {
     Vector2 position;
     Vector2 speed;
     float radius;
@@ -19,7 +19,7 @@ typedef struct Shoot {
     int lifeSpawn;
     bool active;
     Color color;
-} Shoot;
+};
 
 const int maxShoots = 10;
 
@@ -36,3 +36,5 @@ void MovePlayer();
 void ColisionWall();
 void LogicShoot();
 void LogicPlayer();
+
+

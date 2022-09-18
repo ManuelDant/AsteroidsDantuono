@@ -1,13 +1,10 @@
 #include "raylib.h"
 #include "player.h"
+#include "meteor.h"
 #include <cmath>
 
 const int screenWidth = 1024;
 const int screenHeight = 768;
-
-static bool gameover = false;
-static bool pause = false;
-static bool victory = false;
 
 void SetupGame();
 void Update();
@@ -32,6 +29,7 @@ void RunGame() {
 void SetupGame()
 {
     SetupPlayer();
+    SetupMeteor();
     
 }
 
@@ -54,17 +52,21 @@ void Update()
 
         if (!pause)
         {
+          
             MovePlayer();
-            ColisionWall();  
-        }
+            ColisionWall();
+            ColisionMeteors();
+            LogicMeteor();
 
-    }
-    else
-    {
-        if (IsKeyPressed(KEY_ENTER))
+            if (destroyedMeteorsCount == maxBigMeteors + maxMidMeteors + maxSmallMeteors) victory = true;
+        }
+        else
         {
-            SetupGame();
-            gameover = false;
+            if (IsKeyPressed(KEY_ENTER))
+            {
+                SetupGame();
+                gameover = false;
+            }
         }
     }
 }
@@ -73,6 +75,10 @@ void DrawPause() {
     if (!gameover)
     {
         PlayerDraw();
+        DrawMeteors();
+
+        if (victory) DrawText("VICTORY", screenWidth / 2 - MeasureText("VICTORY", 20) / 2, screenHeight / 2, 20, LIGHTGRAY);
+
         if (pause) DrawText("GAME PAUSED", screenWidth / 2 - MeasureText("GAME PAUSED", 40) / 2, screenHeight / 2 - 40, 40, GRAY);
     }
     else DrawText("PRESS [ENTER] TO PLAY AGAIN", GetScreenWidth() / 2 - MeasureText("PRESS [ENTER] TO PLAY AGAIN", 20) / 2, GetScreenHeight() / 2 - 50, 20, GRAY);

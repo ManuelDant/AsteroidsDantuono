@@ -21,7 +21,7 @@
     <ClCompile Include="src\Game.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="src\Player.cpp">
+    <ClCompile Include="src\Controller.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
   </ItemGroup>
@@ -30,6 +30,9 @@
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="src\game.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="src\meteor.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>

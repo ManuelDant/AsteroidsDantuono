@@ -21,10 +21,11 @@
   <ItemGroup>
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\Player.cpp" />
+    <ClCompile Include="src\Controller.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game.h" />
+    <ClInclude Include="src\meteor.h" />
     <ClInclude Include="src\player.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
