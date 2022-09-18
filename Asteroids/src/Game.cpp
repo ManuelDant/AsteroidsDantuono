@@ -32,7 +32,7 @@ void RunGame() {
 void SetupGame()
 {
     SetupPlayer();
-
+    
 }
 
 void DrawGame() {
@@ -55,8 +55,7 @@ void Update()
         if (!pause)
         {
             MovePlayer();
-            ColisionWall();
- 
+            ColisionWall();  
         }
 
     }
