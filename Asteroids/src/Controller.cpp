@@ -4,8 +4,23 @@
 #include "game.h"
 #include <cmath>
 
+void LoadResources() {
+    meteorTexture = LoadTexture("src/meteor.png");
+    ship = LoadTexture("src/ship.png");
+    shootexture = LoadTexture("src/shoot.png");
+    sonido = LoadSound("shoot.mp3");
+}
+
+void UnloadResources() {
+    UnloadSound(sonido);
+    UnloadTexture(ship);
+    UnloadTexture(shootexture);
+    UnloadTexture(meteorTexture);
+}
+
 void PlayerDraw() {
-    Texture2D ship = LoadTexture("src/ship.png");
+    
+
     int framewidth = ship.width;
     int frameheight = ship.height;
 
@@ -20,9 +35,9 @@ void PlayerDraw() {
 
     for (int i = 0; i < maxShoots; i++)
     {
-        if (shoot[i].active) DrawCircleV(shoot[i].position, shoot[i].radius, WHITE);
+        if (shoot[i].active) { 
+            DrawTexture(shootexture, shoot[i].position.x - 50, shoot[i].position.y - 50, WHITE); }      
     }
-    UnloadTexture(texture);
 }
 
 void SetupPlayer() {
@@ -64,9 +79,10 @@ void ColisionWall() {
 }
 
 void LogicShoot() {
-
+    
     if (IsKeyPressed(KEY_SPACE) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
     {
+        PlaySoundMulti(sonido);
         for (int i = 0; i < maxShoots; i++)
         {
             if (!shoot[i].active)
@@ -233,9 +249,9 @@ void SetupMeteor() {
 }
 
 void DrawMeteors() {
-    Texture2D texture = LoadTexture("src/meteor.png");
-    int framewidth = texture.width;
-    int frameheight = texture.height;
+
+    int framewidth = meteorTexture.width;
+    int frameheight = meteorTexture.height;
 
     Rectangle sourceRec = { 5.0f,5.0f, (float)framewidth,(float)frameheight };
     Vector2 Origin = { (float)framewidth,(float)frameheight };
@@ -244,14 +260,14 @@ void DrawMeteors() {
         Rectangle destRecBig = { bigMeteor[i].position.x, bigMeteor[i].position.y, 250, 200
     };
         if (bigMeteor[i].active) {
-            DrawTexturePro(texture, sourceRec, destRecBig, Origin, bigMeteor[i].position.x + bigMeteor[i].position.y, WHITE);         
+            DrawTexturePro(meteorTexture, sourceRec, destRecBig, Origin, bigMeteor[i].position.x + bigMeteor[i].position.y, WHITE);
         }    
     }
 
     for (int i = 0; i < maxMidMeteors; i++)
     {
         Rectangle destRecMid = { mediumMeteor[i].position.x, mediumMeteor[i].position.y, 190, 200 };
-        if (mediumMeteor[i].active) DrawTexturePro(texture, sourceRec, destRecMid, Origin, mediumMeteor[i].position.x + mediumMeteor[i].position.y, WHITE); 
+        if (mediumMeteor[i].active) DrawTexturePro(meteorTexture, sourceRec, destRecMid, Origin, mediumMeteor[i].position.x + mediumMeteor[i].position.y, WHITE);
        
     }
 
@@ -260,7 +276,7 @@ void DrawMeteors() {
         Vector2 Originsmall = { (float)framewidth - 70,(float)frameheight - 60 };
         Rectangle destRecSmall = { smallMeteor[i].position.x, smallMeteor[i].position.y, 80, 80 };
         if (smallMeteor[i].active)
-            DrawTexturePro(texture, sourceRec, destRecSmall, Originsmall, smallMeteor[i].position.x + smallMeteor[i].position.y, WHITE);
+            DrawTexturePro(meteorTexture, sourceRec, destRecSmall, Originsmall, smallMeteor[i].position.x + smallMeteor[i].position.y, WHITE);
         
     }
     if (destroyedMeteorsCount == maxBigMeteors + maxMidMeteors + maxSmallMeteors) DefeatPlayer();

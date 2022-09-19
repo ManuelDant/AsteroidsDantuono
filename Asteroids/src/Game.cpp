@@ -16,12 +16,13 @@ void DrawPause();
 void Update();
 void DrawGame();
 
-
-
 void RunGame()
 {
     InitWindow(screenWidth, screenHeight, "Asteroids By: Manuel Dantuono");
+    InitAudioDevice();
     
+    LoadResources();
+
     SetTargetFPS(60);
 
     SetupGame();
@@ -33,6 +34,9 @@ void RunGame()
         DrawGame();    
     }
 
+    
+    UnloadResources();
+    CloseAudioDevice();
     CloseWindow();
 }
 

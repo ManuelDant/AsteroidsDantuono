@@ -21,10 +21,14 @@ struct Shoot {
     Color color;
 };
 
+static Texture2D ship;
+static Texture2D shootexture;
+
+static Sound sonido;
+
 const int maxShoots = 10;
 static bool hitbox = false;
 
-static Texture2D texture;
 static Player player = { 0 };
 static Shoot shoot[maxShoots] = { 0 };
 
@@ -40,5 +44,7 @@ void LogicShoot();
 void LogicPlayer();
 void DefeatPlayer();
 void Restart();
+void LoadResources();
+void UnloadResources();
 
 

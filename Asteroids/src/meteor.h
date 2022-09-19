@@ -9,6 +9,7 @@ struct Meteor {
     Color color;
 };
 
+static Texture2D meteorTexture;
 
 const int speedMeteros =2;
 const int maxBigMeteors  =5;
