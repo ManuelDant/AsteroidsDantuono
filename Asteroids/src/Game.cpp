@@ -17,9 +17,11 @@ void Update();
 void DrawGame();
 
 
+
 void RunGame()
 {
     InitWindow(screenWidth, screenHeight, "Asteroids By: Manuel Dantuono");
+    
     SetTargetFPS(60);
 
     SetupGame();
@@ -27,7 +29,8 @@ void RunGame()
     while (!WindowShouldClose())
     {
         Update();
-        DrawGame();
+        //DrawTexture(texture, screenWidth / 2 - texture.width / 2, screenHeight / 2 - texture.height / 2, WHITE);
+        DrawGame();    
     }
 
     CloseWindow();
@@ -43,7 +46,7 @@ void SetupGame()
 void DrawGame() {
     BeginDrawing();
 
-    ClearBackground(RAYWHITE);
+    ClearBackground(GRAY);
 
     DrawPause();
 

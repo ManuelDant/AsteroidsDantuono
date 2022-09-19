@@ -5,16 +5,24 @@
 #include <cmath>
 
 void PlayerDraw() {
+    Texture2D ship = LoadTexture("src/ship.png");
+    int framewidth = ship.width;
+    int frameheight = ship.height;
+
+    Rectangle sourceRec = { 5.0f,5.0f, (float)framewidth,(float)frameheight };
+    Rectangle destRec = { player.position.x, player.position.y, 200, 200};
+    Vector2 Origin = { (float)framewidth,(float)frameheight };
 
     Vector2 v1 = { player.position.x + sinf(player.rotation * DEG2RAD) * (shipHeight), player.position.y - cosf(player.rotation * DEG2RAD) * (shipHeight) };
     Vector2 v2 = { player.position.x - cosf(player.rotation * DEG2RAD) * (playerBaseSize / 2), player.position.y - sinf(player.rotation * DEG2RAD) * (playerBaseSize / 2) };
     Vector2 v3 = { player.position.x + cosf(player.rotation * DEG2RAD) * (playerBaseSize / 2), player.position.y + sinf(player.rotation * DEG2RAD) * (playerBaseSize / 2) };
-    DrawTriangle(v1, v2, v3, MAROON);
+    DrawTexturePro(ship, sourceRec, destRec, Origin, player.rotation, WHITE);
 
     for (int i = 0; i < maxShoots; i++)
     {
-        if (shoot[i].active) DrawCircleV(shoot[i].position, shoot[i].radius, BLACK);
+        if (shoot[i].active) DrawCircleV(shoot[i].position, shoot[i].radius, WHITE);
     }
+    UnloadTexture(texture);
 }
 
 void SetupPlayer() {
@@ -36,7 +44,7 @@ void SetupPlayer() {
         shoot[i].radius = 4;
         shoot[i].active = false;
         shoot[i].lifeSpawn = 0;
-        shoot[i].color = RED;
+        shoot[i].color = WHITE;
     }
 }
 
@@ -225,21 +233,26 @@ void SetupMeteor() {
 }
 
 void DrawMeteors() {
+    Texture2D texture = LoadTexture("src/meteor.png");
     for (int i = 0; i < maxBigMeteors; i++)
     {
-        if (bigMeteor[i].active) DrawCircleV(bigMeteor[i].position, bigMeteor[i].radius, DARKBROWN);
+        if (bigMeteor[i].active) DrawTextureEx(texture, { bigMeteor[i].position.x - 120, bigMeteor[i].position.y - 190 }, 10, 3, WHITE); 
+        
     }
 
     for (int i = 0; i < maxMidMeteors; i++)
     {
-        if (mediumMeteor[i].active) DrawCircleV(mediumMeteor[i].position, mediumMeteor[i].radius, DARKBROWN);
+        if (mediumMeteor[i].active)  DrawTextureEx(texture, { mediumMeteor[i].position.x - 60, mediumMeteor[i].position.y - 90 }, 10, 1.5f, WHITE); 
+       
     }
 
     for (int i = 0; i < maxSmallMeteors; i++)
     {
-        if (smallMeteor[i].active) DrawCircleV(smallMeteor[i].position, smallMeteor[i].radius, DARKBROWN);
+        if (smallMeteor[i].active) DrawTextureEx(texture, { smallMeteor[i].position.x - 40, smallMeteor[i].position.y - 53 }, 10, 0.9f, WHITE); 
+        
     }
     if (destroyedMeteorsCount == maxBigMeteors + maxMidMeteors + maxSmallMeteors) DefeatPlayer();
+
 }
 
 void LogicMeteor() {
@@ -248,11 +261,10 @@ void LogicMeteor() {
     {
         if (bigMeteor[i].active)
         {
-            // Movement
+
             bigMeteor[i].position.x += bigMeteor[i].speed.x;
             bigMeteor[i].position.y += bigMeteor[i].speed.y;
 
-            // Collision logic: meteor vs wall
             if (bigMeteor[i].position.x > GetScreenWidth() + bigMeteor[i].radius) bigMeteor[i].position.x = -(bigMeteor[i].radius);
             else if (bigMeteor[i].position.x < 0 - bigMeteor[i].radius) bigMeteor[i].position.x = GetScreenWidth() + bigMeteor[i].radius;
             if (bigMeteor[i].position.y > GetScreenHeight() + bigMeteor[i].radius) bigMeteor[i].position.y = -(bigMeteor[i].radius);
@@ -299,7 +311,7 @@ void ColisionMeteors() {
 
     for (int a = 0; a < maxBigMeteors; a++)
     {
-        if (CheckCollisionCircles({ player.position.x , player.position.y }, 15, bigMeteor[a].position, bigMeteor[a].radius) && bigMeteor[a].active) {
+        if (CheckCollisionCircles({ player.position.x , player.position.y }, 19, bigMeteor[a].position, bigMeteor[a].radius) && bigMeteor[a].active) {
             DefeatPlayer();
         }
         
@@ -307,12 +319,12 @@ void ColisionMeteors() {
 
     for (int a = 0; a < maxMidMeteors; a++)
     {
-        if (CheckCollisionCircles({ player.position.x , player.position.y }, 15, mediumMeteor[a].position, mediumMeteor[a].radius) && mediumMeteor[a].active) DefeatPlayer();
+        if (CheckCollisionCircles({ player.position.x , player.position.y }, 19, mediumMeteor[a].position, mediumMeteor[a].radius) && mediumMeteor[a].active) DefeatPlayer();
     }
 
     for (int a = 0; a < maxSmallMeteors; a++)
     {
-        if (CheckCollisionCircles({ player.position.x , player.position.y }, 15, smallMeteor[a].position, smallMeteor[a].radius) && smallMeteor[a].active) DefeatPlayer();
+        if (CheckCollisionCircles({ player.position.x , player.position.y }, 19, smallMeteor[a].position, smallMeteor[a].radius) && smallMeteor[a].active) DefeatPlayer();
     }
 
     for (int i = 0; i < maxShoots; i++)

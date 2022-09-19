@@ -24,6 +24,7 @@ struct Shoot {
 const int maxShoots = 10;
 static bool hitbox = false;
 
+static Texture2D texture;
 static Player player = { 0 };
 static Shoot shoot[maxShoots] = { 0 };
 
