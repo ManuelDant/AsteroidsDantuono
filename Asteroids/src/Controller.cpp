@@ -205,7 +205,7 @@ void SetupMeteor() {
         }
 
         bigMeteor[i].speed = { velx, vely };
-        bigMeteor[i].radius = 80;
+        bigMeteor[i].radius = 55;
         bigMeteor[i].active = true;
         bigMeteor[i].color = BLUE;
     }
@@ -214,7 +214,7 @@ void SetupMeteor() {
     {
         mediumMeteor[i].position = { -100, -100 };
         mediumMeteor[i].speed = { 0,0 };
-        mediumMeteor[i].radius = 40;
+        mediumMeteor[i].radius = 45;
         mediumMeteor[i].active = false;
         mediumMeteor[i].color = BLUE;
     }
@@ -234,21 +234,33 @@ void SetupMeteor() {
 
 void DrawMeteors() {
     Texture2D texture = LoadTexture("src/meteor.png");
+    int framewidth = texture.width;
+    int frameheight = texture.height;
+
+    Rectangle sourceRec = { 5.0f,5.0f, (float)framewidth,(float)frameheight };
+    Vector2 Origin = { (float)framewidth,(float)frameheight };
     for (int i = 0; i < maxBigMeteors; i++)
-    {
-        if (bigMeteor[i].active) DrawTextureEx(texture, { bigMeteor[i].position.x - 120, bigMeteor[i].position.y - 190 }, 10, 3, WHITE); 
-        
+    {   
+        Rectangle destRecBig = { bigMeteor[i].position.x, bigMeteor[i].position.y, 250, 200
+    };
+        if (bigMeteor[i].active) {
+            DrawTexturePro(texture, sourceRec, destRecBig, Origin, bigMeteor[i].position.x + bigMeteor[i].position.y, WHITE);         
+        }    
     }
 
     for (int i = 0; i < maxMidMeteors; i++)
     {
-        if (mediumMeteor[i].active)  DrawTextureEx(texture, { mediumMeteor[i].position.x - 60, mediumMeteor[i].position.y - 90 }, 10, 1.5f, WHITE); 
+        Rectangle destRecMid = { mediumMeteor[i].position.x, mediumMeteor[i].position.y, 190, 200 };
+        if (mediumMeteor[i].active) DrawTexturePro(texture, sourceRec, destRecMid, Origin, mediumMeteor[i].position.x + mediumMeteor[i].position.y, WHITE); 
        
     }
 
     for (int i = 0; i < maxSmallMeteors; i++)
     {
-        if (smallMeteor[i].active) DrawTextureEx(texture, { smallMeteor[i].position.x - 40, smallMeteor[i].position.y - 53 }, 10, 0.9f, WHITE); 
+        Vector2 Originsmall = { (float)framewidth - 70,(float)frameheight - 60 };
+        Rectangle destRecSmall = { smallMeteor[i].position.x, smallMeteor[i].position.y, 80, 80 };
+        if (smallMeteor[i].active)
+            DrawTexturePro(texture, sourceRec, destRecSmall, Originsmall, smallMeteor[i].position.x + smallMeteor[i].position.y, WHITE);
         
     }
     if (destroyedMeteorsCount == maxBigMeteors + maxMidMeteors + maxSmallMeteors) DefeatPlayer();
