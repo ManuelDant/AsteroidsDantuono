@@ -11,6 +11,8 @@ struct Meteor {
 
 static Texture2D meteorTexture;
 
+static Sound meteorImpact;
+
 const int speedMeteros =2;
 const int maxBigMeteors  =5;
 const int maxMidMeteors =10;

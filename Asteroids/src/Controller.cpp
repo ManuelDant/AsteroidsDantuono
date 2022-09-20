@@ -8,19 +8,26 @@ void LoadResources() {
     meteorTexture = LoadTexture("src/meteor.png");
     ship = LoadTexture("src/ship.png");
     shootexture = LoadTexture("src/shoot.png");
-    sonido = LoadSound("shoot.mp3");
+    shipShoot = LoadSound("shoot.mp3");
+    meteorImpact = LoadSound("meteorImpact.mp3");
+    shipCrash = LoadSound("shipCrash.mp3");
+    background = LoadMusicStream("music.mp3");
+    SetSoundVolume(meteorImpact, 0.3f);
+    SetSoundVolume(shipCrash, 0.5f);
+    SetSoundVolume(shipShoot, 2);
 }
 
 void UnloadResources() {
-    UnloadSound(sonido);
+    UnloadSound(shipShoot);
+    UnloadSound(meteorImpact);
+    UnloadSound(shipCrash);
+    UnloadMusicStream(background);
     UnloadTexture(ship);
     UnloadTexture(shootexture);
     UnloadTexture(meteorTexture);
 }
 
 void PlayerDraw() {
-    
-
     int framewidth = ship.width;
     int frameheight = ship.height;
 
@@ -32,6 +39,9 @@ void PlayerDraw() {
     Vector2 v2 = { player.position.x - cosf(player.rotation * DEG2RAD) * (playerBaseSize / 2), player.position.y - sinf(player.rotation * DEG2RAD) * (playerBaseSize / 2) };
     Vector2 v3 = { player.position.x + cosf(player.rotation * DEG2RAD) * (playerBaseSize / 2), player.position.y + sinf(player.rotation * DEG2RAD) * (playerBaseSize / 2) };
     DrawTexturePro(ship, sourceRec, destRec, Origin, player.rotation, WHITE);
+
+    PlayMusicStream(background);
+    UpdateMusicStream(background);
 
     for (int i = 0; i < maxShoots; i++)
     {
@@ -82,7 +92,7 @@ void LogicShoot() {
     
     if (IsKeyPressed(KEY_SPACE) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
     {
-        PlaySoundMulti(sonido);
+        PlaySoundMulti(shipShoot);
         for (int i = 0; i < maxShoots; i++)
         {
             if (!shoot[i].active)
@@ -246,6 +256,8 @@ void SetupMeteor() {
 
     midMeteorsCount = 0;
     smallMeteorsCount = 0;
+
+    destroyedMeteorsCount = 0;
 }
 
 void DrawMeteors() {
@@ -279,7 +291,8 @@ void DrawMeteors() {
             DrawTexturePro(meteorTexture, sourceRec, destRecSmall, Originsmall, smallMeteor[i].position.x + smallMeteor[i].position.y, WHITE);
         
     }
-    if (destroyedMeteorsCount == maxBigMeteors + maxMidMeteors + maxSmallMeteors) DefeatPlayer();
+
+    if (destroyedMeteorsCount == maxBigMeteors + maxMidMeteors + maxSmallMeteors) Victory(1);
 
 }
 
@@ -340,6 +353,8 @@ void ColisionMeteors() {
     for (int a = 0; a < maxBigMeteors; a++)
     {
         if (CheckCollisionCircles({ player.position.x , player.position.y }, 19, bigMeteor[a].position, bigMeteor[a].radius) && bigMeteor[a].active) {
+            StopMusicStream(background);
+            PlaySound(shipCrash);
             DefeatPlayer();
         }
         
@@ -347,12 +362,18 @@ void ColisionMeteors() {
 
     for (int a = 0; a < maxMidMeteors; a++)
     {
-        if (CheckCollisionCircles({ player.position.x , player.position.y }, 19, mediumMeteor[a].position, mediumMeteor[a].radius) && mediumMeteor[a].active) DefeatPlayer();
+        if (CheckCollisionCircles({ player.position.x , player.position.y }, 19, mediumMeteor[a].position, mediumMeteor[a].radius) && mediumMeteor[a].active) { 
+            StopMusicStream(background);
+            PlaySound(shipCrash);
+            DefeatPlayer(); }
     }
 
     for (int a = 0; a < maxSmallMeteors; a++)
     {
-        if (CheckCollisionCircles({ player.position.x , player.position.y }, 19, smallMeteor[a].position, smallMeteor[a].radius) && smallMeteor[a].active) DefeatPlayer();
+        if (CheckCollisionCircles({ player.position.x , player.position.y }, 19, smallMeteor[a].position, smallMeteor[a].radius) && smallMeteor[a].active) { 
+            StopMusicStream(background);
+            PlaySound(shipCrash);
+            DefeatPlayer(); }
     }
 
     for (int i = 0; i < maxShoots; i++)
@@ -363,6 +384,7 @@ void ColisionMeteors() {
             {
                 if (bigMeteor[a].active && CheckCollisionCircles(shoot[i].position, shoot[i].radius, bigMeteor[a].position, bigMeteor[a].radius))
                 {
+                    PlaySoundMulti(meteorImpact);               
                     shoot[i].active = false;
                     shoot[i].lifeSpawn = 0;
                     bigMeteor[a].active = false;
@@ -394,6 +416,7 @@ void ColisionMeteors() {
             {
                 if (mediumMeteor[b].active && CheckCollisionCircles(shoot[i].position, shoot[i].radius, mediumMeteor[b].position, mediumMeteor[b].radius))
                 {
+                    PlaySoundMulti(meteorImpact);
                     shoot[i].active = false;
                     shoot[i].lifeSpawn = 0;
                     mediumMeteor[b].active = false;
@@ -425,6 +448,7 @@ void ColisionMeteors() {
             {
                 if (smallMeteor[c].active && CheckCollisionCircles(shoot[i].position, shoot[i].radius, smallMeteor[c].position, smallMeteor[c].radius))
                 {
+                    PlaySoundMulti(meteorImpact);
                     shoot[i].active = false;
                     shoot[i].lifeSpawn = 0;
                     smallMeteor[c].active = false;

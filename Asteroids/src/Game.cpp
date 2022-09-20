@@ -9,7 +9,6 @@ const int screenHeight = 768;
 
 static bool gameover = false;
 static bool pause = false;
-static bool victory = false;
 
 void SetupGame();
 void DrawPause();
@@ -30,7 +29,6 @@ void RunGame()
     while (!WindowShouldClose())
     {
         Update();
-        //DrawTexture(texture, screenWidth / 2 - texture.width / 2, screenHeight / 2 - texture.height / 2, WHITE);
         DrawGame();    
     }
 
@@ -50,7 +48,7 @@ void SetupGame()
 void DrawGame() {
     BeginDrawing();
 
-    ClearBackground(GRAY);
+    ClearBackground(BLACK);
 
     DrawPause();
 
@@ -75,11 +73,17 @@ void Restart() {
     }
 }
 
+void Victory(bool victory) {
+
+    if (victory) 
+    { DrawText("VICTORIA!!", screenWidth / 2 - MeasureText("VICTORIA!!", 20) / 2, screenHeight / 2, 50, LIGHTGRAY); }
+}
+
 void Update()
 {
     if (!gameover)
     {
-        if (IsKeyPressed('P')) pause = !pause;
+        if (IsKeyPressed('P')) pause = !pause; 
 
         if (!pause)
         {
@@ -102,12 +106,13 @@ void Update()
 void DrawPause() {
     if (!gameover)
     {
+        
         PlayerDraw();
         DrawMeteors();
 
-        if (victory) DrawText("VICTORIA!!", screenWidth / 2 - MeasureText("VICTORIA!!", 20) / 2, screenHeight / 2, 50, DARKPURPLE);
+        Victory(0);
 
-        if (pause) DrawText("Pausa! (P para reanudar)", screenWidth / 2 - MeasureText("Pausa! (P para reaunar)", 40) / 2 - 100, screenHeight / 2 - 40, 60, DARKPURPLE);
+        if (pause) DrawText("Pausa! (P para reanudar)", screenWidth / 2 - MeasureText("Pausa! (P para reaunar)", 40) / 2 - 150, screenHeight / 2 - 40, 60, DARKPURPLE);
     }
     else DrawText("Presiona (ENTER) para volver a jugar", GetScreenWidth() / 2 - MeasureText("Presiona (ENTER) para volver a jugar", 20) / 2 - 300, GetScreenHeight() / 2 - 50, 50, RED);
     Restart();
