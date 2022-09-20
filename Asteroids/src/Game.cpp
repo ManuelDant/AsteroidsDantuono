@@ -7,6 +7,8 @@
 const int screenWidth = 1024;
 const int screenHeight = 768;
 
+bool exitWindows = false;
+bool exitGameplay = false;
 static bool gameover = false;
 static bool pause = false;
 
@@ -15,19 +17,21 @@ void DrawPause();
 void Update();
 void DrawGame();
 void Menu();
+void RestarPreGameplay();
+void Play(Rectangle mousepos, Rectangle play);
+void Exit(Rectangle mousepos, Rectangle exit);
+void MenuTexts();
 
 void RunGame()
 {
     InitWindow(screenWidth, screenHeight, "Asteroids By: Manuel Dantuono");
     InitAudioDevice();
-    
     LoadResources();
-
     SetTargetFPS(60);
 
     
 
-    while (!WindowShouldClose())
+    while (!exitWindows && !WindowShouldClose())
     {
         Menu();
     }
@@ -67,10 +71,15 @@ void DefeatPlayer()
 void Restart() {
     if (!pause && gameover)
     {
-        if (IsKeyPressed(KEY_ENTER))
+        if (IsKeyPressed(KEY_SPACE))
         {
             SetupGame();
             gameover = false;
+        }
+
+        if (IsKeyPressed(KEY_ESCAPE))
+        {
+            exitGameplay = true;
         }
     }
 }
@@ -91,9 +100,10 @@ void Victory(bool victory) {
 
 void Update()
 {
+    SetExitKey(KEY_NULL);
     if (!gameover)
     {
-        if (IsKeyPressed('P')) pause = !pause; 
+        if (IsKeyPressed(KEY_ESCAPE)) pause = !pause; 
 
         if (!pause)
         {
@@ -102,11 +112,6 @@ void Update()
             ColisionWall();
             ColisionMeteors();
             LogicMeteor();   
-
-            if (IsKeyDown(KEY_X))
-            {
-                gameover = true;
-            }
 
         }
     }
@@ -122,26 +127,62 @@ void DrawPause() {
 
         Victory(0);
 
-        if (pause) DrawText("Pausa! (P para reanudar)", screenWidth / 2 - MeasureText("Pausa! (P para reaunar)", 40) / 2 - 150, screenHeight / 2 - 40, 60, DARKPURPLE);
+        if (pause) DrawText("Pausa! (ESC para reanudar | SPACE para salir)", screenWidth / 2 - MeasureText("Pausa! (ESC para reanudar | SPACE para salir)", 5) / 2 - 250, screenHeight / 2 - 40, 30, DARKPURPLE);
     }
-    else DrawText("Presiona (ENTER) para volver a jugar", GetScreenWidth() / 2 - MeasureText("Presiona (ENTER) para volver a jugar", 20) / 2 - 300, GetScreenHeight() / 2 - 50, 50, RED);
+    else {
+        DrawText("Presiona (SPACE) para volver a jugar", GetScreenWidth() / 2 - MeasureText("Presiona (SPACE) para volver a jugar", 20) / 2 - 300, GetScreenHeight() / 2 - 50, 50, RED);
+        DrawText("Para salir presione (ESC)", screenWidth / 2 - 50, screenHeight / 2 + 340, 40, RED);
+    }
     Restart();
 }
 
 void Menu() {
+    SetExitKey(KEY_ESCAPE);
+    
     Rectangle mousepos;
     Rectangle play;
+    Rectangle exit;
     mousepos = { (float)GetMouseX(), (float)GetMouseY(), 1, 1 };
     play = { screenWidth / 2 - 150, screenHeight / 2, 300, 150 };
+    exit = { 950, 10, 50,50 };
 
     ClearBackground(BLACK);
     ShowCursor();
-
-    
-    DrawText("Asteoirds", screenWidth / 2 - 200, screenHeight / 2 - 300, 100, RED);
-    DrawRectangleGradientEx(play, ORANGE, WHITE, WHITE, ORANGE);
-    DrawText("JUGAR", screenWidth / 2 - 50, screenHeight / 2 + 50, 30, RED);
     DrawRectangleRec(mousepos, RED);
+
+    DrawRectangleGradientEx(play, ORANGE, WHITE, WHITE, ORANGE);
+    DrawRectangleGradientEx(exit, ORANGE, WHITE, WHITE, ORANGE);
+  
+    MenuTexts();
+    Play(mousepos, play);
+    Exit(mousepos, exit);
+    
+ 
+    if (IsKeyPressed(KEY_ESCAPE))
+    {
+        exitWindows = true;
+    }
+
+    EndDrawing();
+}
+
+void RestarPreGameplay() {
+
+    exitGameplay = false;
+    if (pause)
+    {
+        pause = false;
+    }
+}
+
+void MenuTexts() {
+    DrawText("Asteroids", screenWidth / 2 - 200, screenHeight / 2 - 300, 100, RED);
+    DrawText("JUGAR", screenWidth / 2 - 50, screenHeight / 2 + 50, 30, RED);
+    DrawText("x", 965, 15, 40, RED);
+
+}
+
+void Play(Rectangle mousepos, Rectangle play) {
 
     if (CheckCollisionRecs(mousepos, play)) {
 
@@ -152,16 +193,35 @@ void Menu() {
         {
             EndDrawing();
             SetupGame();
-            while (!WindowShouldClose())
+            RestarPreGameplay();
+            while (!exitGameplay)
             {
                 Update();
                 DrawGame();
+
+                if (pause)
+                {
+                    if (IsKeyDown(KEY_SPACE))
+                    {
+                        exitGameplay = true;
+                    }
+                }
             }
 
             gameover = false;
         }
     }
- 
-    
-    EndDrawing();
+}
+
+void Exit(Rectangle mousepos, Rectangle exit) {
+    if (CheckCollisionRecs(mousepos,exit))
+    {
+        DrawRectangleRec(exit,RED);
+        DrawText("x", 965, 15, 40, WHITE);
+
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+        {
+            exitWindows = true;
+        }
+    }
 }

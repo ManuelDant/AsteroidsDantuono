@@ -1,4 +1,3 @@
-#include "raylib.h"
 #include "player.h"
 #include "meteor.h"
 #include "game.h"
