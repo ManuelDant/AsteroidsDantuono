@@ -8,6 +8,7 @@ void LoadResources() {
     meteorTexture = LoadTexture("src/meteor.png");
     ship = LoadTexture("src/ship.png");
     shootexture = LoadTexture("src/shoot.png");
+    mira = LoadTexture("src/mira.png");
     shipShoot = LoadSound("shoot.mp3");
     meteorImpact = LoadSound("meteorImpact.mp3");
     shipCrash = LoadSound("shipCrash.mp3");
@@ -25,6 +26,7 @@ void UnloadResources() {
     UnloadTexture(ship);
     UnloadTexture(shootexture);
     UnloadTexture(meteorTexture);
+    UnloadTexture(mira);
 }
 
 void PlayerDraw() {
@@ -48,6 +50,9 @@ void PlayerDraw() {
         if (shoot[i].active) { 
             DrawTexture(shootexture, shoot[i].position.x - 50, shoot[i].position.y - 50, WHITE); }      
     }
+
+    HideCursor();
+    DrawTexturePro(mira, { 5.0f,5.0f, (float)mira.width,(float)mira.height }, { (float)GetMouseX() - 17,(float)GetMouseY() - 5, 250,250 }, { (float)mira.width,(float)mira.height}, 0, WHITE);
 }
 
 void SetupPlayer() {
@@ -112,16 +117,16 @@ void LogicShoot() {
         if (shoot[i].active) shoot[i].lifeSpawn++;
     }
 
-    // Shot logic
+
     for (int i = 0; i < maxShoots; i++)
     {
         if (shoot[i].active)
         {
-            // Movement
+
             shoot[i].position.x += shoot[i].speed.x;
             shoot[i].position.y -= shoot[i].speed.y;
 
-            // Collision logic: shoot vs walls
+
             if (shoot[i].position.x > GetScreenWidth() + shoot[i].radius)
             {
                 shoot[i].active = false;
@@ -143,7 +148,7 @@ void LogicShoot() {
                 shoot[i].lifeSpawn = 0;
             }
 
-            // Life of shoot
+
             if (shoot[i].lifeSpawn >= 60)
             {
                 shoot[i].position = { 0, 0 };
@@ -168,17 +173,12 @@ void LogicPlayer() {
         player.speed.x = sin(player.rotation * DEG2RAD) * playerSpeed;
         player.speed.y = cos(player.rotation * DEG2RAD) * playerSpeed;
 
-        if (player.acceleration < 1) player.acceleration += 0.04f;
+        if (player.acceleration < 1) player.acceleration += 0.01f;
 
     }
     else
     {
         if (player.acceleration > 0) player.acceleration = player.acceleration;
-        else if (player.acceleration < 0) player.acceleration = 0;
-    }
-    if (IsKeyDown(KEY_DOWN))
-    {
-        if (player.acceleration > 0) player.acceleration -= 0.04f;
         else if (player.acceleration < 0) player.acceleration = 0;
     }
 

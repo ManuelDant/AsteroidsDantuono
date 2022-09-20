@@ -23,6 +23,7 @@ struct Shoot {
 
 static Texture2D ship;
 static Texture2D shootexture;
+static Texture2D mira;
 
 static Sound shipShoot;
 static Sound shipCrash;

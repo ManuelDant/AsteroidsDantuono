@@ -14,6 +14,7 @@ void SetupGame();
 void DrawPause();
 void Update();
 void DrawGame();
+void Menu();
 
 void RunGame()
 {
@@ -24,12 +25,11 @@ void RunGame()
 
     SetTargetFPS(60);
 
-    SetupGame();
+    
 
     while (!WindowShouldClose())
     {
-        Update();
-        DrawGame();    
+        Menu();
     }
 
     
@@ -40,8 +40,10 @@ void RunGame()
 
 void SetupGame()
 {
+    BeginDrawing();
     SetupPlayer();
     SetupMeteor();
+    EndDrawing();
     
 }
 
@@ -77,6 +79,14 @@ void Victory(bool victory) {
 
     if (victory) 
     { DrawText("VICTORIA!!", screenWidth / 2 - MeasureText("VICTORIA!!", 20) / 2, screenHeight / 2, 50, LIGHTGRAY); }
+
+    
+        if (IsKeyPressed(KEY_ENTER) && victory == true)
+        {
+            SetupGame();
+            gameover = false;
+        }
+    
 }
 
 void Update()
@@ -116,4 +126,42 @@ void DrawPause() {
     }
     else DrawText("Presiona (ENTER) para volver a jugar", GetScreenWidth() / 2 - MeasureText("Presiona (ENTER) para volver a jugar", 20) / 2 - 300, GetScreenHeight() / 2 - 50, 50, RED);
     Restart();
+}
+
+void Menu() {
+    Rectangle mousepos;
+    Rectangle play;
+    mousepos = { (float)GetMouseX(), (float)GetMouseY(), 1, 1 };
+    play = { screenWidth / 2 - 150, screenHeight / 2, 300, 150 };
+
+    ClearBackground(BLACK);
+    ShowCursor();
+
+    
+    DrawText("Asteoirds", screenWidth / 2 - 200, screenHeight / 2 - 300, 100, RED);
+    DrawRectangleGradientEx(play, ORANGE, WHITE, WHITE, ORANGE);
+    DrawText("JUGAR", screenWidth / 2 - 50, screenHeight / 2 + 50, 30, RED);
+    DrawRectangleRec(mousepos, RED);
+
+    if (CheckCollisionRecs(mousepos, play)) {
+
+        DrawRectangleRec(play, RED);
+        DrawText("JUGAR", screenWidth / 2 - 50, screenHeight / 2 + 50, 30, WHITE);
+
+        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
+        {
+            EndDrawing();
+            SetupGame();
+            while (!WindowShouldClose())
+            {
+                Update();
+                DrawGame();
+            }
+
+            gameover = false;
+        }
+    }
+ 
+    
+    EndDrawing();
 }
