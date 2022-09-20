@@ -11,6 +11,7 @@ bool exitWindows = false;
 bool exitGameplay = false;
 static bool gameover = false;
 static bool pause = false;
+int framesCounter = 0;
 
 void SetupGame();
 void DrawPause();
@@ -20,6 +21,7 @@ void Menu();
 void RestarPreGameplay();
 void Play(Rectangle mousepos, Rectangle play);
 void Exit(Rectangle mousepos, Rectangle exit);
+void Credits(Rectangle mousepos, Rectangle credits);
 void MenuTexts();
 
 void RunGame()
@@ -117,7 +119,6 @@ void Update()
     }
 }
 
-
 void DrawPause() {
     if (!gameover)
     {
@@ -137,14 +138,12 @@ void DrawPause() {
 }
 
 void Menu() {
-    SetExitKey(KEY_ESCAPE);
     
-    Rectangle mousepos;
-    Rectangle play;
-    Rectangle exit;
-    mousepos = { (float)GetMouseX(), (float)GetMouseY(), 1, 1 };
-    play = { screenWidth / 2 - 150, screenHeight / 2, 300, 150 };
-    exit = { 950, 10, 50,50 };
+
+    Rectangle mousepos = { (float)GetMouseX(), (float)GetMouseY(), 1, 1 };
+    Rectangle play = { screenWidth / 2 - 150, screenHeight / 2, 300, 150 };
+    Rectangle exit = { 950, 10, 50,50 };
+    Rectangle credits = { screenWidth / 2 + 170, screenHeight / 2, 300, 150 };
 
     ClearBackground(BLACK);
     ShowCursor();
@@ -152,18 +151,21 @@ void Menu() {
 
     DrawRectangleGradientEx(play, ORANGE, WHITE, WHITE, ORANGE);
     DrawRectangleGradientEx(exit, ORANGE, WHITE, WHITE, ORANGE);
+    DrawRectangleGradientEx(credits, ORANGE, WHITE, WHITE, ORANGE);
   
     MenuTexts();
     Play(mousepos, play);
     Exit(mousepos, exit);
+    Credits(mousepos, credits);
     
  
-    if (IsKeyPressed(KEY_ESCAPE))
+    if (IsKeyReleased(KEY_ESCAPE))
     {
         exitWindows = true;
     }
 
     EndDrawing();
+    SetExitKey(KEY_ESCAPE);
 }
 
 void RestarPreGameplay() {
@@ -178,6 +180,7 @@ void RestarPreGameplay() {
 void MenuTexts() {
     DrawText("Asteroids", screenWidth / 2 - 200, screenHeight / 2 - 300, 100, RED);
     DrawText("JUGAR", screenWidth / 2 - 50, screenHeight / 2 + 50, 30, RED);
+    DrawText("CREDITOS", screenWidth / 2 + 240, screenHeight / 2 + 50, 30, RED);
     DrawText("x", 965, 15, 40, RED);
 
 }
@@ -222,6 +225,45 @@ void Exit(Rectangle mousepos, Rectangle exit) {
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
         {
             exitWindows = true;
+        }
+    }
+}
+
+void Credits(Rectangle mousepos, Rectangle credits) {
+    if (CheckCollisionRecs(mousepos, credits))
+    {
+        DrawRectangleRec(credits, RED);
+        DrawText("CREDITOS", screenWidth / 2 + 240, screenHeight / 2 + 50, 30, WHITE);
+
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+        {
+            EndDrawing();
+            exitGameplay = false;
+            framesCounter = 0;
+            while (!exitGameplay)
+            {
+                int finalmessage = 1000;
+                const char message[128] = "Testeando el mensaje...";
+                
+                if (IsKeyDown(KEY_SPACE))
+                {
+                    framesCounter = finalmessage + 1;
+                }
+                if (framesCounter > finalmessage)
+                {
+                    exitGameplay = true;
+                }
+                BeginDrawing();
+                
+                if (IsKeyDown(KEY_SPACE)) framesCounter += 8;
+                else framesCounter++;
+                
+                ClearBackground(BLACK);
+                DrawText(TextSubtext(message, 0, framesCounter / 5), 210, 160, 40, WHITE);
+                DrawText("(SPACE) Salida Rapida.", 670, 10, 30, WHITE);
+                EndDrawing();
+            }
+            
         }
     }
 }
