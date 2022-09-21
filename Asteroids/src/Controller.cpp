@@ -3,11 +3,15 @@
 #include "game.h"
 #include <cmath>
 
+
+
 void LoadResources() {
     meteorTexture = LoadTexture("src/meteor.png");
     ship = LoadTexture("src/ship.png");
     shootexture = LoadTexture("src/shoot.png");
     mira = LoadTexture("src/mira.png");
+    bground = LoadTexture("src/bground.png");
+    bgroundgame = LoadTexture("src/bgroundgame.png");
     shipShoot = LoadSound("shoot.mp3");
     meteorImpact = LoadSound("meteorImpact.mp3");
     shipCrash = LoadSound("shipCrash.mp3");
@@ -15,6 +19,9 @@ void LoadResources() {
     SetSoundVolume(meteorImpact, 0.3f);
     SetSoundVolume(shipCrash, 0.5f);
     SetSoundVolume(shipShoot, 2);
+    bground.width = 1500;
+    bground.height = 400;
+
 }
 
 void UnloadResources() {
@@ -26,11 +33,30 @@ void UnloadResources() {
     UnloadTexture(shootexture);
     UnloadTexture(meteorTexture);
     UnloadTexture(mira);
+    UnloadTexture(bground);
+    UnloadTexture(bgroundgame);
+}
+
+void BackgroundMenu() {
+
+    scrollingBack -= 1.0f;
+    if (scrollingBack <= -bground.width * 2 + 1050) scrollingBack = 0;
+    DrawTextureEx(bground, { scrollingBack }, 0.0f, 2.0f, WHITE);
+    DrawTextureEx(bground, { bground.width  + scrollingBack }, 0.0f, 0.0f, WHITE);
+}
+
+void BackgroundGame() {
+    scrollingBack -= 5.0f;
+    if (scrollingBack <= -bgroundgame.width * 2 ) scrollingBack = 0;
+    DrawTextureEx(bgroundgame, { scrollingBack }, 0.0f, 2.0f, WHITE);
+    DrawTextureEx(bgroundgame, { bgroundgame.width * 2 + scrollingBack }, 0.0f, 2.0f, WHITE);
 }
 
 void PlayerDraw() {
     int framewidth = ship.width;
     int frameheight = ship.height;
+
+    BackgroundGame();
 
     Rectangle sourceRec = { 5.0f,5.0f, (float)framewidth,(float)frameheight };
     Rectangle destRec = { player.position.x, player.position.y, 200, 200};
@@ -52,6 +78,7 @@ void PlayerDraw() {
 
     HideCursor();
     DrawTexturePro(mira, { 5.0f,5.0f, (float)mira.width,(float)mira.height }, { (float)GetMouseX() - 17,(float)GetMouseY() - 5, 250,250 }, { (float)mira.width,(float)mira.height}, 0, WHITE);
+
 }
 
 void SetupPlayer() {
@@ -62,7 +89,6 @@ void SetupPlayer() {
     player.speed = { 0, 0 };
     player.acceleration = 40;
     player.rotation = 0;
-    player.collider = { player.position.x + sin(player.rotation * DEG2RAD) * (shipHeight / 2.5f), player.position.y - cos(player.rotation * DEG2RAD) * (shipHeight / 2.5f), 12 };
     player.color = LIGHTGRAY;
     
 

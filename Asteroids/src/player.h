@@ -6,8 +6,6 @@ struct Player {
     Vector2 speed;
     float acceleration;
     float rotation;
-    Vector2 Rotation;
-    Vector3 collider;
     Color color;
 };
 
@@ -25,8 +23,14 @@ static Texture2D ship;
 static Texture2D shootexture;
 static Texture2D mira;
 
+static float scrollingBack = 0.0f;
+static Texture2D bground;
+static Texture2D bgroundgame;
+
+
 static Sound shipShoot;
 static Sound shipCrash;
+ 
 static Music background;
 
 const int maxShoots = 10;
@@ -50,5 +54,4 @@ void Restart();
 void Victory(bool victory);
 void LoadResources();
 void UnloadResources();
-
 
