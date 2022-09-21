@@ -10,18 +10,23 @@ void LoadResources() {
     ship = LoadTexture("src/ship.png");
     shootexture = LoadTexture("src/shoot.png");
     mira = LoadTexture("src/mira.png");
+    title = LoadTexture("src/title.png");
     bground = LoadTexture("src/bground.png");
     bgroundgame = LoadTexture("src/bgroundgame.png");
+    option = LoadTexture("src/option.png");
     shipShoot = LoadSound("shoot.mp3");
     meteorImpact = LoadSound("meteorImpact.mp3");
     shipCrash = LoadSound("shipCrash.mp3");
     background = LoadMusicStream("music.mp3");
+    menubg = LoadMusicStream("menubg.mp3");
     SetSoundVolume(meteorImpact, 0.3f);
     SetSoundVolume(shipCrash, 0.5f);
     SetSoundVolume(shipShoot, 2);
     bground.width = 1500;
     bground.height = 400;
 
+    option.width = 500;
+    option.height = 500;
 }
 
 void UnloadResources() {
@@ -35,6 +40,54 @@ void UnloadResources() {
     UnloadTexture(mira);
     UnloadTexture(bground);
     UnloadTexture(bgroundgame);
+    UnloadTexture(title);
+    UnloadTexture(option);
+    UnloadMusicStream(menubg);
+}
+
+void PlayMusicMenu() {
+    PlayMusicStream(menubg);
+    UpdateMusicStream(menubg);
+}
+void DrawOptionPlay(bool isOn) {
+    
+    if (!isOn)
+    {
+        DrawTexture(option, GetScreenWidth() / 2 - 260, GetScreenHeight() / 2 - 210, WHITE);
+    }
+    else
+    {
+        DrawTexture(option, GetScreenWidth() / 2 - 260, GetScreenHeight() / 2 - 210, RED);
+    }
+    
+}
+
+void DrawOptionRules(bool isOn) {
+    if (!isOn)
+    {
+        DrawTexture(option, GetScreenWidth() / 2 - 580, GetScreenHeight() / 2 - 210, WHITE);
+    }
+    else
+    {
+        DrawTexture(option, GetScreenWidth() / 2 - 580, GetScreenHeight() / 2 - 210, RED);
+    }
+}
+
+void DrawOptionCredits(bool isOn) {
+    if (!isOn)
+    {
+        DrawTexture(option, GetScreenWidth() / 2 + 60, GetScreenHeight() / 2 - 210, WHITE);
+    }
+    else
+    {
+        DrawTexture(option, GetScreenWidth() / 2 + 60, GetScreenHeight() / 2 - 210, RED);
+    }
+}
+
+void DrawTitle() {
+    title.width = 1000;
+    title.height = 700;
+    DrawTexture(title, GetScreenWidth() / 2 - 500, GetScreenHeight() / 2 - 480, WHITE);
 }
 
 void BackgroundMenu() {
@@ -46,7 +99,8 @@ void BackgroundMenu() {
 }
 
 void BackgroundGame() {
-    scrollingBack -= 5.0f;
+        scrollingBack -= 5.0f;
+  
     if (scrollingBack <= -bgroundgame.width * 2 ) scrollingBack = 0;
     DrawTextureEx(bgroundgame, { scrollingBack }, 0.0f, 2.0f, WHITE);
     DrawTextureEx(bgroundgame, { bgroundgame.width * 2 + scrollingBack }, 0.0f, 2.0f, WHITE);
@@ -82,7 +136,8 @@ void PlayerDraw() {
 }
 
 void SetupPlayer() {
-
+    StopMusicStream(menubg);
+    StopMusicStream(background);
     shipHeight = (playerBaseSize / 2) / tanf(20 * DEG2RAD);
 
     player.position = { (float)GetScreenWidth() / 2, (float)GetScreenHeight() / 2};

@@ -26,11 +26,14 @@ static Texture2D mira;
 static float scrollingBack = 0.0f;
 static Texture2D bground;
 static Texture2D bgroundgame;
+static Texture2D title;
+static Texture2D option;
 
 
 static Sound shipShoot;
 static Sound shipCrash;
  
+static Music menubg;
 static Music background;
 
 const int maxShoots = 10;
@@ -54,4 +57,5 @@ void Restart();
 void Victory(bool victory);
 void LoadResources();
 void UnloadResources();
+void BackgroundGame();
 

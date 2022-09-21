@@ -27,6 +27,11 @@ void Rules(Rectangle mousepos, Rectangle rules);
 void MenuTexts();
 void BackgroundMenu();
 void BackgroundGame();
+void DrawTitle();
+void DrawOptionPlay(bool isOn);
+void DrawOptionRules(bool isOn);
+void DrawOptionCredits(bool isOn);
+void PlayMusicMenu();
 
 void RunGame()
 {
@@ -144,6 +149,7 @@ void DrawPause() {
 void Menu() {
     BackgroundMenu();
 
+    PlayMusicMenu();
     Rectangle mousepos = { (float)GetMouseX(), (float)GetMouseY(), 1, 1 };
     Rectangle play = { screenWidth / 2 - 150, screenHeight / 2, 300, 150 };
     Rectangle exit = { 950, 10, 50,50 };
@@ -152,12 +158,13 @@ void Menu() {
 
     ClearBackground(BLACK);
     ShowCursor();
-    DrawRectangleRec(mousepos, RED);
 
-    DrawRectangleGradientEx(play, ORANGE, WHITE, WHITE, ORANGE);
-    DrawRectangleGradientEx(exit, ORANGE, WHITE, WHITE, ORANGE);
-    DrawRectangleGradientEx(credits, ORANGE, WHITE, WHITE, ORANGE);
-    DrawRectangleGradientEx(rules, ORANGE, WHITE, WHITE, ORANGE);
+    DrawTitle();
+    
+    DrawOptionPlay(0);
+    DrawOptionRules(0);
+    DrawOptionCredits(0);
+    DrawRectangleGradientEx(exit, DARKBROWN, DARKBLUE, WHITE, DARKBROWN);
   
     MenuTexts();
     Play(mousepos, play);
@@ -184,10 +191,9 @@ void RestarPreGameplay() {
 }
 
 void MenuTexts() {
-    DrawText("Asteroids", screenWidth / 2 - 200, screenHeight / 2 - 300, 100, RED);
-    DrawText("JUGAR", screenWidth / 2 - 50, screenHeight / 2 + 50, 30, RED);
-    DrawText("CREDITOS", screenWidth / 2 + 240, screenHeight / 2 + 50, 30, RED);
-    DrawText("REGLAS", screenWidth / 2 - 380, screenHeight / 2 + 50, 30, RED);
+    DrawText("JUGAR", screenWidth / 2 - 95, screenHeight / 2 + 50, 60, SKYBLUE);
+    DrawText("CREDITOS", screenWidth / 2 + 190, screenHeight / 2 + 50, 50, SKYBLUE);
+    DrawText("REGLAS", screenWidth / 2 - 440, screenHeight / 2 + 50, 60, SKYBLUE);
     DrawText("x", 965, 15, 40, RED);
 }
 
@@ -195,8 +201,8 @@ void Play(Rectangle mousepos, Rectangle play) {
 
     if (CheckCollisionRecs(mousepos, play)) {
 
-        DrawRectangleRec(play, RED);
-        DrawText("JUGAR", screenWidth / 2 - 50, screenHeight / 2 + 50, 30, WHITE);
+        DrawOptionPlay(1);
+        DrawText("JUGAR", screenWidth / 2 - 95, screenHeight / 2 + 50, 60, WHITE);
 
         if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
         {
@@ -238,8 +244,8 @@ void Exit(Rectangle mousepos, Rectangle exit) {
 void Credits(Rectangle mousepos, Rectangle credits) {
     if (CheckCollisionRecs(mousepos, credits))
     {
-        DrawRectangleRec(credits, RED);
-        DrawText("CREDITOS", screenWidth / 2 + 240, screenHeight / 2 + 50, 30, WHITE);
+        DrawOptionCredits(1);
+        DrawText("CREDITOS", screenWidth / 2 + 190, screenHeight / 2 + 50, 50, WHITE);
 
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
         {
@@ -248,6 +254,7 @@ void Credits(Rectangle mousepos, Rectangle credits) {
             framesCounter = 0;
             while (!exitGameplay)
             {
+                PlayMusicMenu();
                 int finalmessage = 1000;
                 const char message[128] = "Testeando el mensaje...";
                 
@@ -278,8 +285,8 @@ void Credits(Rectangle mousepos, Rectangle credits) {
 void Rules(Rectangle mousepos, Rectangle rules) {
     if (CheckCollisionRecs(mousepos, rules))
     {
-        DrawRectangleRec(rules, RED);
-        DrawText("REGLAS", screenWidth / 2 - 380, screenHeight / 2 + 50, 30, WHITE);
+        DrawOptionRules(1);
+        DrawText("REGLAS", screenWidth / 2 - 440, screenHeight / 2 + 50, 60, WHITE);
 
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
         {
@@ -288,6 +295,7 @@ void Rules(Rectangle mousepos, Rectangle rules) {
             framesCounter = 0;
             while (!exitGameplay)
             {
+                PlayMusicMenu();
                 int finalmessage = 1000;
                 const char message[128] = "Testeando el mensaje...";
 
