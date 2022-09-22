@@ -51,6 +51,7 @@ void RunGame()
 void SetupGame()
 {
     BeginDrawing();
+    EnemySetup();
     SetupPlayer();
     SetupMeteor();
     EndDrawing();
@@ -113,7 +114,7 @@ void Update()
 
         if (!pause)
         {
-          
+            LogicEnemy();
             MovePlayer();
             ColisionWall();
             ColisionMeteors();
@@ -126,9 +127,9 @@ void Update()
 void DrawPause() {
     if (!gameover)
     {
-        
         PlayerDraw();
         DrawMeteors();
+        DrawEnemy();
 
         Victory(0);
 

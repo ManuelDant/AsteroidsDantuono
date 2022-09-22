@@ -7,6 +7,7 @@ struct Player {
     float acceleration;
     float rotation;
     Color color;
+    bool active;
 };
 
 struct Shoot {
@@ -22,7 +23,10 @@ struct Shoot {
 const int maxShoots = 10;
 static bool hitbox = false;
 
-static Player player = { 0 };
+static Player player;
+static const int MaxEnemy = 1;
+static Player enemy[MaxEnemy];
+
 static Shoot shoot[maxShoots] = { 0 };
 
 static float playerBaseSize = 20.0f;
@@ -38,5 +42,8 @@ void LogicPlayer();
 void DefeatPlayer();
 void Restart();
 void Victory(bool victory);
+void EnemySetup();
+void DrawEnemy();
+void LogicEnemy();
 
 

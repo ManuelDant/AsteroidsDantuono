@@ -42,12 +42,117 @@ bool CheckColissionsCircles(float c1x, float c1y, float c2x, float c2y, float c1
     return false;
 }
 
+void EnemySetup() {
+    for (int i = 0; i < MaxEnemy; i++)
+    {
+        enemy[i].position = { (float)GetScreenWidth() / 2, (float)GetScreenHeight() / 2 };
+        enemy[i].speed = { 0, 0 };
+        enemy[i].acceleration = 40;
+        enemy[i].rotation = 0;
+        enemy[i].active = true;
+
+        float posx;
+        float posy;
+        bool correctRange = false;
+
+        posx = GetRandomValue(0, GetScreenWidth());
+
+        while (!correctRange)
+        {
+            if (posx > GetScreenWidth() / 2 - 150 && posx < GetScreenWidth() / 2 + 150) posx = GetRandomValue(0, GetScreenWidth());
+            else correctRange = true;
+        }
+
+        correctRange = false;
+
+        posy = GetRandomValue(0, GetScreenHeight());
+
+        while (!correctRange)
+        {
+            if (posy > GetScreenHeight() / 2 - 150 && posy < GetScreenHeight() / 2 + 150)  posy = GetRandomValue(0, GetScreenHeight());
+            else correctRange = true;
+        }
+
+        enemy[i].position = { posx, posy };
+    }
+}
+
 void BackgroundGame() {
         scrollingBack -= 5.0f;
   
     if (scrollingBack <= -bgroundgame.width * 2 ) scrollingBack = 0;
     DrawTextureEx(bgroundgame, { scrollingBack }, 0.0f, 2.0f, WHITE);
     DrawTextureEx(bgroundgame, { bgroundgame.width * 2 + scrollingBack }, 0.0f, 2.0f, WHITE);
+}
+
+void LogicEnemy() {
+    for (int i = 0; i < MaxEnemy; i++)
+    {
+
+        enemy[i].speed.x = sin(enemy[i].rotation * DEG2RAD) * playerSpeed;
+        enemy[i].speed.y = cos(enemy[i].rotation * DEG2RAD) * playerSpeed;
+
+        enemy[i].position.x += (enemy[i].speed.x * player.acceleration / 4) * GetFrameTime();
+        enemy[i].position.y -= (enemy[i].speed.y * player.acceleration / 4) * GetFrameTime();
+
+        if (enemy[i].position.x > GetScreenWidth() + shipHeight) {
+            enemy[i].active = false;
+        }
+        else if (enemy[i].position.x < -(shipHeight)) {
+            enemy[i].active = false;
+        }
+
+        if (enemy[i].position.y > (GetScreenHeight() + shipHeight)) {
+            enemy[i].active = false;
+        }
+        else if (enemy[i].position.y < -(shipHeight)) {
+            enemy[i].active = false;
+        }
+    }
+}
+
+void DrawEnemy() {
+    int framewidth = ship.width;
+    int frameheight = ship.height;
+   
+    for (int i = 0; i < MaxEnemy; i++)
+    {
+        float angulosradianes = atan2(enemy[i].position.y - player.position.y, enemy[i].position.x - player.position.x);
+        float angulogrados = (180 / PI) * angulosradianes - 90;
+
+            
+        Rectangle sourceRec = { 5.0f,5.0f, (float)framewidth,(float)frameheight };
+        Rectangle destRec = { enemy[i].position.x, enemy[i].position.y, 200, 200 };
+        Vector2 Origin = { (float)framewidth,(float)frameheight };
+
+        if (enemy[i].active)
+        {
+            if (CheckColissionsCircles(enemy[i].position.x, enemy[i].position.y, player.position.x, player.position.y, 25, 19))
+            {
+                StopMusicStream(background);
+                PlaySound(shipCrash);
+                DefeatPlayer();
+            }         
+            if (destroyedMeteorsCount == maxBigMeteors + maxMidMeteors + maxSmallMeteors) {
+                angulogrados = (180 / PI) * angulosradianes - 270;
+                DrawTexturePro(ship, sourceRec, destRec, Origin, enemy[i].rotation, BLUE);
+            }
+            else
+            {
+                DrawTexturePro(ship, sourceRec, destRec, Origin, enemy[i].rotation, RED);
+            }
+
+            enemy[i].rotation = angulogrados;
+
+            
+
+            
+        }
+        if (enemy[i].active == false)
+        {
+            destroyedMeteorsCount++;
+        }
+    }
 }
 
 void PlayerDraw() {
@@ -60,9 +165,6 @@ void PlayerDraw() {
     Rectangle destRec = { player.position.x, player.position.y, 200, 200};
     Vector2 Origin = { (float)framewidth,(float)frameheight };
 
-    Vector2 v1 = { player.position.x + sinf(player.rotation * DEG2RAD) * (shipHeight), player.position.y - cosf(player.rotation * DEG2RAD) * (shipHeight) };
-    Vector2 v2 = { player.position.x - cosf(player.rotation * DEG2RAD) * (playerBaseSize / 2), player.position.y - sinf(player.rotation * DEG2RAD) * (playerBaseSize / 2) };
-    Vector2 v3 = { player.position.x + cosf(player.rotation * DEG2RAD) * (playerBaseSize / 2), player.position.y + sinf(player.rotation * DEG2RAD) * (playerBaseSize / 2) };
     DrawTexturePro(ship, sourceRec, destRec, Origin, player.rotation, WHITE);
 
     PlayMusicStream(background);
@@ -145,9 +247,19 @@ void LogicShoot() {
     {
         if (shoot[i].active)
         {
+            if (destroyedMeteorsCount == maxBigMeteors + maxMidMeteors + maxSmallMeteors) {
+                if (CheckColissionsCircles(enemy[i].position.x, enemy[i].position.y, shoot[i].position.x, shoot[i].position.y, 19, shoot[i].radius))
+                {
+                    PlaySoundMulti(meteorImpact);
+                    shoot[i].active = false;
+                    shoot[i].lifeSpawn = 0;             
+                    enemy[i].active = false;
+                    
+                }
+            }
 
-            shoot[i].position.x += shoot[i].speed.x;
-            shoot[i].position.y -= shoot[i].speed.y;
+            shoot[i].position.x += shoot[i].speed.x + 40 * GetFrameTime();
+            shoot[i].position.y -= shoot[i].speed.y + 40 * GetFrameTime();
 
 
             if (shoot[i].position.x > GetScreenWidth() + shoot[i].radius)
@@ -181,6 +293,8 @@ void LogicShoot() {
             }
         }
     }
+
+   
 }
 
 void LogicPlayer() {
@@ -256,7 +370,6 @@ void SetupMeteor() {
         bigMeteor[i].speed = { velx, vely };
         bigMeteor[i].radius = 55;
         bigMeteor[i].active = true;
-        bigMeteor[i].color = BLUE;
     }
 
     for (int i = 0; i < maxMidMeteors; i++)
@@ -265,7 +378,6 @@ void SetupMeteor() {
         mediumMeteor[i].speed = { 0,0 };
         mediumMeteor[i].radius = 45;
         mediumMeteor[i].active = false;
-        mediumMeteor[i].color = BLUE;
     }
 
     for (int i = 0; i < maxSmallMeteors; i++)
@@ -274,7 +386,6 @@ void SetupMeteor() {
         smallMeteor[i].speed = { 0,0 };
         smallMeteor[i].radius = 20;
         smallMeteor[i].active = false;
-        smallMeteor[i].color = BLUE;
     }
 
     midMeteorsCount = 0;
@@ -315,7 +426,9 @@ void DrawMeteors() {
         
     }
 
-    if (destroyedMeteorsCount == maxBigMeteors + maxMidMeteors + maxSmallMeteors) Victory(1);
+    if (destroyedMeteorsCount >= maxBigMeteors + maxMidMeteors + maxSmallMeteors + MaxEnemy) { 
+        destroyedMeteorsCount = maxBigMeteors + maxMidMeteors + maxSmallMeteors + MaxEnemy;
+        Victory(1); }
 
 }
 
@@ -326,8 +439,8 @@ void LogicMeteor() {
         if (bigMeteor[i].active)
         {
 
-            bigMeteor[i].position.x += bigMeteor[i].speed.x;
-            bigMeteor[i].position.y += bigMeteor[i].speed.y;
+            bigMeteor[i].position.x += bigMeteor[i].speed.x + 40 * GetFrameTime();
+            bigMeteor[i].position.y += bigMeteor[i].speed.y + 40 * GetFrameTime();
 
             if (bigMeteor[i].position.x > GetScreenWidth() + bigMeteor[i].radius) bigMeteor[i].position.x = -(bigMeteor[i].radius);
             else if (bigMeteor[i].position.x < 0 - bigMeteor[i].radius) bigMeteor[i].position.x = GetScreenWidth() + bigMeteor[i].radius;
@@ -342,8 +455,8 @@ void LogicMeteor() {
         if (mediumMeteor[i].active)
         {
 
-            mediumMeteor[i].position.x += mediumMeteor[i].speed.x;
-            mediumMeteor[i].position.y += mediumMeteor[i].speed.y;
+            mediumMeteor[i].position.x += mediumMeteor[i].speed.x + 40 * GetFrameTime();
+            mediumMeteor[i].position.y += mediumMeteor[i].speed.y + 40 * GetFrameTime();
 
 
             if (mediumMeteor[i].position.x > GetScreenWidth() + mediumMeteor[i].radius) mediumMeteor[i].position.x = -(mediumMeteor[i].radius);
@@ -359,8 +472,8 @@ void LogicMeteor() {
         if (smallMeteor[i].active)
         {
 
-            smallMeteor[i].position.x += smallMeteor[i].speed.x;
-            smallMeteor[i].position.y += smallMeteor[i].speed.y;
+            smallMeteor[i].position.x += smallMeteor[i].speed.x + 40 * GetFrameTime();
+            smallMeteor[i].position.y += smallMeteor[i].speed.y + 40 * GetFrameTime();
 
 
             if (smallMeteor[i].position.x > GetScreenWidth() + smallMeteor[i].radius) smallMeteor[i].position.x = -(smallMeteor[i].radius);
@@ -431,7 +544,6 @@ void ColisionMeteors() {
                         midMeteorsCount++;
                     }
                     bigMeteor[a].position = { -100, -100 };
-                    bigMeteor[a].color = RED;
                     a = maxBigMeteors;
                 }
             }
@@ -463,7 +575,6 @@ void ColisionMeteors() {
                         smallMeteorsCount++;
                     }
                     mediumMeteor[b].position = { -100, -100 };
-                    mediumMeteor[b].color = GREEN;
                     b = maxMidMeteors;
                 }
             }
@@ -477,7 +588,6 @@ void ColisionMeteors() {
                     shoot[i].lifeSpawn = 0;
                     smallMeteor[c].active = false;
                     destroyedMeteorsCount++;
-                    smallMeteor[c].color = YELLOW;
                     smallMeteor[c].position = { -100, -100 };
                     c = maxSmallMeteors;
                 }
