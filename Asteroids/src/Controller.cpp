@@ -1,35 +1,25 @@
 #include "player.h"
 #include "meteor.h"
 #include "game.h"
+#include "assetsGame.h"
 #include <cmath>
 
-
-
-void LoadResources() {
-    meteorTexture = LoadTexture("src/meteor.png");
-    ship = LoadTexture("src/ship.png");
-    shootexture = LoadTexture("src/shoot.png");
-    mira = LoadTexture("src/mira.png");
-    title = LoadTexture("src/title.png");
-    bground = LoadTexture("src/bground.png");
-    bgroundgame = LoadTexture("src/bgroundgame.png");
-    option = LoadTexture("src/option.png");
+void LoadResourcesGame() {
+    meteorTexture = LoadTexture("rsc/meteor.png");
+    ship = LoadTexture("rsc/ship.png");
+    shootexture = LoadTexture("rsc/shoot.png");
+    mira = LoadTexture("rsc/mira.png");
+    bgroundgame = LoadTexture("rsc/bgroundgame.png");  
     shipShoot = LoadSound("shoot.mp3");
     meteorImpact = LoadSound("meteorImpact.mp3");
     shipCrash = LoadSound("shipCrash.mp3");
-    background = LoadMusicStream("music.mp3");
-    menubg = LoadMusicStream("menubg.mp3");
-    SetSoundVolume(meteorImpact, 0.3f);
+    background = LoadMusicStream("music.mp3");  
+    SetSoundVolume(meteorImpact, 0.3f);    
     SetSoundVolume(shipCrash, 0.5f);
     SetSoundVolume(shipShoot, 2);
-    bground.width = 1500;
-    bground.height = 400;
-
-    option.width = 500;
-    option.height = 500;
 }
 
-void UnloadResources() {
+void UnloadResourcesGame() {
     UnloadSound(shipShoot);
     UnloadSound(meteorImpact);
     UnloadSound(shipCrash);
@@ -38,64 +28,18 @@ void UnloadResources() {
     UnloadTexture(shootexture);
     UnloadTexture(meteorTexture);
     UnloadTexture(mira);
-    UnloadTexture(bground);
-    UnloadTexture(bgroundgame);
-    UnloadTexture(title);
-    UnloadTexture(option);
-    UnloadMusicStream(menubg);
+    UnloadTexture(bgroundgame);  
 }
 
-void PlayMusicMenu() {
-    PlayMusicStream(menubg);
-    UpdateMusicStream(menubg);
-}
-void DrawOptionPlay(bool isOn) {
-    
-    if (!isOn)
-    {
-        DrawTexture(option, GetScreenWidth() / 2 - 260, GetScreenHeight() / 2 - 210, WHITE);
-    }
-    else
-    {
-        DrawTexture(option, GetScreenWidth() / 2 - 260, GetScreenHeight() / 2 - 210, RED);
-    }
-    
-}
+bool CheckColissionsCircles(float c1x, float c1y, float c2x, float c2y, float c1r, float c2r) {
+    float distX = c1x - c2x;
+    float distY = c1y - c2y;
+    float distance = sqrt((distX * distX) + (distY * distY));
 
-void DrawOptionRules(bool isOn) {
-    if (!isOn)
-    {
-        DrawTexture(option, GetScreenWidth() / 2 - 580, GetScreenHeight() / 2 - 210, WHITE);
+    if (distance <= c1r + c2r) {
+        return true;
     }
-    else
-    {
-        DrawTexture(option, GetScreenWidth() / 2 - 580, GetScreenHeight() / 2 - 210, RED);
-    }
-}
-
-void DrawOptionCredits(bool isOn) {
-    if (!isOn)
-    {
-        DrawTexture(option, GetScreenWidth() / 2 + 60, GetScreenHeight() / 2 - 210, WHITE);
-    }
-    else
-    {
-        DrawTexture(option, GetScreenWidth() / 2 + 60, GetScreenHeight() / 2 - 210, RED);
-    }
-}
-
-void DrawTitle() {
-    title.width = 1000;
-    title.height = 700;
-    DrawTexture(title, GetScreenWidth() / 2 - 500, GetScreenHeight() / 2 - 480, WHITE);
-}
-
-void BackgroundMenu() {
-
-    scrollingBack -= 1.0f;
-    if (scrollingBack <= -bground.width * 2 + 1050) scrollingBack = 0;
-    DrawTextureEx(bground, { scrollingBack }, 0.0f, 2.0f, WHITE);
-    DrawTextureEx(bground, { bground.width  + scrollingBack }, 0.0f, 0.0f, WHITE);
+    return false;
 }
 
 void BackgroundGame() {
@@ -136,7 +80,6 @@ void PlayerDraw() {
 }
 
 void SetupPlayer() {
-    StopMusicStream(menubg);
     StopMusicStream(background);
     shipHeight = (playerBaseSize / 2) / tanf(20 * DEG2RAD);
 
@@ -432,7 +375,8 @@ void ColisionMeteors() {
 
     for (int a = 0; a < maxBigMeteors; a++)
     {
-        if (CheckCollisionCircles({ player.position.x , player.position.y }, 19, bigMeteor[a].position, bigMeteor[a].radius) && bigMeteor[a].active) {
+        if (CheckColissionsCircles(player.position.x,player.position.y,bigMeteor[a].position.x, bigMeteor[a].position.y, 19, bigMeteor[a].radius)) 
+        {
             StopMusicStream(background);
             PlaySound(shipCrash);
             DefeatPlayer();
@@ -442,7 +386,7 @@ void ColisionMeteors() {
 
     for (int a = 0; a < maxMidMeteors; a++)
     {
-        if (CheckCollisionCircles({ player.position.x , player.position.y }, 19, mediumMeteor[a].position, mediumMeteor[a].radius) && mediumMeteor[a].active) { 
+        if (CheckColissionsCircles(player.position.x, player.position.y, mediumMeteor[a].position.x, mediumMeteor[a].position.y, 19, mediumMeteor[a].radius)) {
             StopMusicStream(background);
             PlaySound(shipCrash);
             DefeatPlayer(); }
@@ -450,7 +394,7 @@ void ColisionMeteors() {
 
     for (int a = 0; a < maxSmallMeteors; a++)
     {
-        if (CheckCollisionCircles({ player.position.x , player.position.y }, 19, smallMeteor[a].position, smallMeteor[a].radius) && smallMeteor[a].active) { 
+        if (CheckColissionsCircles(player.position.x, player.position.y, smallMeteor[a].position.x, smallMeteor[a].position.y, 19, smallMeteor[a].radius)) {
             StopMusicStream(background);
             PlaySound(shipCrash);
             DefeatPlayer(); }
@@ -462,7 +406,7 @@ void ColisionMeteors() {
         {
             for (int a = 0; a < maxBigMeteors; a++)
             {
-                if (bigMeteor[a].active && CheckCollisionCircles(shoot[i].position, shoot[i].radius, bigMeteor[a].position, bigMeteor[a].radius))
+                if (bigMeteor[a].active && CheckColissionsCircles(shoot[i].position.x, shoot[i].position.y, bigMeteor[a].position.x, bigMeteor[a].position.y, shoot[i].radius, bigMeteor[a].radius))
                 {
                     PlaySoundMulti(meteorImpact);               
                     shoot[i].active = false;
@@ -494,7 +438,7 @@ void ColisionMeteors() {
 
             for (int b = 0; b < maxMidMeteors; b++)
             {
-                if (mediumMeteor[b].active && CheckCollisionCircles(shoot[i].position, shoot[i].radius, mediumMeteor[b].position, mediumMeteor[b].radius))
+                if (mediumMeteor[b].active && CheckColissionsCircles(shoot[i].position.x, shoot[i].position.y, mediumMeteor[b].position.x, mediumMeteor[b].position.y, shoot[i].radius, mediumMeteor[b].radius))
                 {
                     PlaySoundMulti(meteorImpact);
                     shoot[i].active = false;
@@ -526,7 +470,7 @@ void ColisionMeteors() {
 
             for (int c = 0; c < maxSmallMeteors; c++)
             {
-                if (smallMeteor[c].active && CheckCollisionCircles(shoot[i].position, shoot[i].radius, smallMeteor[c].position, smallMeteor[c].radius))
+                if (smallMeteor[c].active && CheckColissionsCircles(shoot[i].position.x, shoot[i].position.y, smallMeteor[c].position.x, smallMeteor[c].position.y, shoot[i].radius, smallMeteor[c].radius))
                 {
                     PlaySoundMulti(meteorImpact);
                     shoot[i].active = false;

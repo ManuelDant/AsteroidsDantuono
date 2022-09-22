@@ -1,43 +1,38 @@
-#include "raylib.h"
 #include "player.h"
 #include "meteor.h"
 #include "game.h"
-#include <cmath>
+#include "assetsMenu.h"
+#include "assetsGame.h"
 
 const int screenWidth = 1024;
 const int screenHeight = 768;
 
+bool isMenu = false;
 bool exitWindows = false;
 bool exitGameplay = false;
-static bool gameover = false;
-static bool pause = false;
+bool gameover = false;
+bool pause = false;
 int framesCounter = 0;
-
 
 void SetupGame();
 void DrawPause();
 void Update();
 void DrawGame();
 void Menu();
-void RestarPreGameplay();
+void RestartPreGameplay();
 void Play(Rectangle mousepos, Rectangle play);
 void Exit(Rectangle mousepos, Rectangle exit);
 void Credits(Rectangle mousepos, Rectangle credits);
 void Rules(Rectangle mousepos, Rectangle rules);
 void MenuTexts();
-void BackgroundMenu();
-void BackgroundGame();
-void DrawTitle();
-void DrawOptionPlay(bool isOn);
-void DrawOptionRules(bool isOn);
-void DrawOptionCredits(bool isOn);
-void PlayMusicMenu();
+
 
 void RunGame()
 {
     InitWindow(screenWidth, screenHeight, "Asteroids By: Manuel Dantuono");
     InitAudioDevice();
-    LoadResources();
+    LoadResourcesGame();
+    LoadResourcesMenu();
     SetTargetFPS(60);
 
     
@@ -47,8 +42,8 @@ void RunGame()
         Menu();
     }
 
-    
-    UnloadResources();
+    UnloadResourcesMenu();
+    UnloadResourcesGame();
     CloseAudioDevice();
     CloseWindow();
 }
@@ -147,9 +142,10 @@ void DrawPause() {
 }
 
 void Menu() {
+    isMenu = true;
     BackgroundMenu();
 
-    PlayMusicMenu();
+    PlayMusicMenu(isMenu);
     Rectangle mousepos = { (float)GetMouseX(), (float)GetMouseY(), 1, 1 };
     Rectangle play = { screenWidth / 2 - 150, screenHeight / 2, 300, 150 };
     Rectangle exit = { 950, 10, 50,50 };
@@ -165,7 +161,7 @@ void Menu() {
     DrawOptionRules(0);
     DrawOptionCredits(0);
     DrawRectangleGradientEx(exit, DARKBROWN, DARKBLUE, WHITE, DARKBROWN);
-  
+    
     MenuTexts();
     Play(mousepos, play);
     Exit(mousepos, exit);
@@ -179,10 +175,10 @@ void Menu() {
     }
 
     EndDrawing();
-    SetExitKey(KEY_ESCAPE);
+    SetExitKey(NULL);
 }
 
-void RestarPreGameplay() {
+void RestartPreGameplay() {
     exitGameplay = false;
     if (pause)
     {
@@ -206,9 +202,10 @@ void Play(Rectangle mousepos, Rectangle play) {
 
         if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
         {
+            PlayMusicMenu(!isMenu);
             EndDrawing();
             SetupGame();
-            RestarPreGameplay();
+            RestartPreGameplay();
             while (!exitGameplay)
             {
                 Update();
@@ -254,7 +251,7 @@ void Credits(Rectangle mousepos, Rectangle credits) {
             framesCounter = 0;
             while (!exitGameplay)
             {
-                PlayMusicMenu();
+                PlayMusicMenu(isMenu);
                 int finalmessage = 1000;
                 const char message[128] = "Testeando el mensaje...";
                 
@@ -290,12 +287,13 @@ void Rules(Rectangle mousepos, Rectangle rules) {
 
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
         {
+
             EndDrawing();
             exitGameplay = false;
             framesCounter = 0;
             while (!exitGameplay)
             {
-                PlayMusicMenu();
+                PlayMusicMenu(isMenu);
                 int finalmessage = 1000;
                 const char message[128] = "Testeando el mensaje...";
 
