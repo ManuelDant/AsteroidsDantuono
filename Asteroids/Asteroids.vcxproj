@@ -27,6 +27,7 @@
   <ItemGroup>
     <ClInclude Include="src\assetsGame.h" />
     <ClInclude Include="src\assetsMenu.h" />
+    <ClInclude Include="src\propellerAnimated.h" />
     <ClInclude Include="src\game.h" />
     <ClInclude Include="src\meteor.h" />
     <ClInclude Include="src\player.h" />

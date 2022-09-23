@@ -1,6 +1,7 @@
 #include "player.h"
 #include "meteor.h"
 #include "assetsGame.h"
+#include "propellerAnimated.h"
 #include <cmath>
 
 void LoadResourcesGame() {
@@ -8,6 +9,7 @@ void LoadResourcesGame() {
     ship = LoadTexture("rsc/ship.png");
     shootexture = LoadTexture("rsc/shoot.png");
     mira = LoadTexture("rsc/mira.png");
+    propeller = LoadTexture("rsc/propeller.png");
     bgroundgame = LoadTexture("rsc/bgroundgame.png");  
     shipShoot = LoadSound("shoot.mp3");
     meteorImpact = LoadSound("meteorImpact.mp3");
@@ -16,6 +18,10 @@ void LoadResourcesGame() {
     SetSoundVolume(meteorImpact, 0.3f);    
     SetSoundVolume(shipCrash, 0.5f);
     SetSoundVolume(shipShoot, 2);
+
+    frameWidth = (float)(propeller.width / numFrames);   // Sprite one frame rectangle width
+    frameHeight = (float)(propeller.height / numLines);           // Sprite one frame rectangle height
+    frameRec = { 0, 0, frameWidth, frameHeight };
 }
 
 void UnloadResourcesGame() {
@@ -28,6 +34,7 @@ void UnloadResourcesGame() {
     UnloadTexture(meteorTexture);
     UnloadTexture(mira);
     UnloadTexture(bgroundgame);  
+    UnloadTexture(propeller);
 }
 
 bool CheckColissionsCircles(float c1x, float c1y, float c2x, float c2y, float c1r, float c2r) {
@@ -39,6 +46,59 @@ bool CheckColissionsCircles(float c1x, float c1y, float c2x, float c2y, float c1
         return true;
     }
     return false;
+}
+
+void PropellerSetup() {
+    int currentFrame = 0;
+    int currentLine = 0;
+
+    Vector2 position = { 0.0f, 0.0f };
+
+    bool active = false;
+    int framesCounter = 0;
+}
+
+void DrawPropeller() {
+    if (active)  DrawTexturePro(propeller, frameRec, { player.position.x, player.position.y, 50, 50 }, { (float)frameWidth - 30, (float)frameHeight - 50 }, player.rotation, WHITE);;
+   
+   
+}
+
+void PropellerLogic() {
+    if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))
+    {
+        active = true;
+
+    }
+
+    // Compute explosion animation frames
+    if (active)
+    {
+        framesCounter += 3;
+
+        if (framesCounter > 2)
+        {
+            currentFrame += 3;
+
+            if (currentFrame >= numFrames)
+            {
+                currentFrame = 0;
+                currentLine += 1;
+
+                if (currentLine >= numLines)
+                {
+                    currentLine = 0;
+                    active = false;
+                }
+            }
+
+            framesCounter = 0;
+        }
+    }
+
+    frameRec.x = frameWidth * currentFrame;
+    frameRec.y = frameHeight * currentLine;
+
 }
 
 void PowerUpsSetup() {
@@ -282,6 +342,8 @@ void PlayerDraw() {
     Rectangle destRec = { player.position.x, player.position.y, 200, 200};
     Vector2 Origin = { (float)framewidth,(float)frameheight };
 
+    PropellerLogic();
+
     DrawTextureEx(bgroundgame, { scrollingBack }, 0.0f, 2.0f, WHITE);
     DrawTextureEx(bgroundgame, { bgroundgame.width * 2 + scrollingBack }, 0.0f, 2.0f, WHITE);
 
@@ -292,8 +354,7 @@ void PlayerDraw() {
     {
         DrawTexturePro(ship, sourceRec, destRec, Origin, player.rotation, WHITE);
     }
-    
-
+    DrawPropeller();
     PlayMusicStream(background);
     
 
@@ -656,9 +717,7 @@ void ColisionMeteors() {
     else {
 
         for (int a = 0; a < maxBigMeteors; a++)
-        {
-
-            
+        {           
                 if (CheckColissionsCircles(player.position.x, player.position.y, bigMeteor[a].position.x, bigMeteor[a].position.y, 19, bigMeteor[a].radius))
                 {
                     StopMusicStream(background);
@@ -670,8 +729,7 @@ void ColisionMeteors() {
         }
 
         for (int a = 0; a < maxMidMeteors; a++)
-        {
-            
+        {         
                 if (CheckColissionsCircles(player.position.x, player.position.y, mediumMeteor[a].position.x, mediumMeteor[a].position.y, 19, mediumMeteor[a].radius)) {
                     StopMusicStream(background);
                     PlaySound(shipCrash);
@@ -681,8 +739,7 @@ void ColisionMeteors() {
         }
 
         for (int a = 0; a < maxSmallMeteors; a++)
-        {
-            
+        {           
                 if (CheckColissionsCircles(player.position.x, player.position.y, smallMeteor[a].position.x, smallMeteor[a].position.y, 19, smallMeteor[a].radius)) {
                     StopMusicStream(background);
                     PlaySound(shipCrash);

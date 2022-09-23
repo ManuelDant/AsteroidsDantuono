@@ -3,6 +3,7 @@
 #include "game.h"
 #include "assetsMenu.h"
 #include "assetsGame.h"
+#include "propellerAnimated.h"
 
 const int screenWidth = 1024;
 const int screenHeight = 768;
@@ -12,7 +13,7 @@ bool exitWindows = false;
 bool exitGameplay = false;
 bool gameover = false;
 bool pause = false;
-int framesCounter = 0;
+
 
 void SetupGame();
 void DrawPause();
@@ -39,7 +40,9 @@ void RunGame()
 
     while (!exitWindows && !WindowShouldClose())
     {
+        
         Menu();
+
     }
 
     UnloadResourcesMenu();
@@ -55,6 +58,7 @@ void SetupGame()
     SetupPlayer();
     SetupMeteor();
     PowerUpsSetup();
+    PropellerSetup();
     EndDrawing();
     
 }
@@ -115,6 +119,7 @@ void Update()
 
         if (!pause)
         {
+            
             PowerUpLogic();
             LogicEnemy();
             MovePlayer();
@@ -128,6 +133,7 @@ void Update()
 void DrawPause() {
     if (!gameover)
     {
+        
         PlayerDraw();
         DrawMeteors();
         DrawEnemy();
@@ -170,8 +176,6 @@ void Menu() {
     Exit(mousepos, exit);
     Credits(mousepos, credits);
     Rules(mousepos, rules);
-    
- 
     if (IsKeyPressed(KEY_ESCAPE))
     {
         exitWindows = true;
