@@ -13,6 +13,7 @@ bool exitWindows = false;
 bool exitGameplay = false;
 bool gameover = false;
 bool pause = false;
+bool isOnOption = false;
 
 
 void SetupGame();
@@ -21,12 +22,6 @@ void Update();
 void DrawGame();
 void Menu();
 void RestartPreGameplay();
-void Play(Rectangle mousepos, Rectangle play);
-void Exit(Rectangle mousepos, Rectangle exit);
-void Credits(Rectangle mousepos, Rectangle credits);
-void Rules(Rectangle mousepos, Rectangle rules);
-void MenuTexts();
-
 
 void RunGame()
 {
@@ -160,6 +155,7 @@ void Menu() {
     Rectangle exit = { 950, 10, 50,50 };
     Rectangle credits = { screenWidth / 2 + 170, screenHeight / 2, 300, 150 };
     Rectangle rules = { screenWidth / 2 - 470, screenHeight / 2, 300, 150 };
+    Rectangle options = { screenWidth / 2 - 150, screenHeight / 2 + 170, 300, 150 };
 
     ClearBackground(BLACK);
     ShowCursor();
@@ -169,13 +165,16 @@ void Menu() {
     DrawOptionPlay(0);
     DrawOptionRules(0);
     DrawOptionCredits(0);
-    DrawRectangleGradientEx(exit, DARKBROWN, DARKBLUE, WHITE, DARKBROWN);
+    DrawOptions(0);
+    DrawRectangleGradientEx(exit, WHITE, DARKBLUE, WHITE, DARKBLUE);
     
     MenuTexts();
     Play(mousepos, play);
     Exit(mousepos, exit);
     Credits(mousepos, credits);
     Rules(mousepos, rules);
+    Options(mousepos, options);
+
     if (IsKeyPressed(KEY_ESCAPE))
     {
         exitWindows = true;
@@ -195,9 +194,10 @@ void RestartPreGameplay() {
 
 void MenuTexts() {
     DrawText("JUGAR", screenWidth / 2 - 95, screenHeight / 2 + 50, 60, SKYBLUE);
+    DrawText("OPCIONES", screenWidth / 2 - 130, screenHeight / 2 + 250, 50, SKYBLUE);
     DrawText("CREDITOS", screenWidth / 2 + 190, screenHeight / 2 + 50, 50, SKYBLUE);
     DrawText("REGLAS", screenWidth / 2 - 440, screenHeight / 2 + 50, 60, SKYBLUE);
-    DrawText("x", 965, 15, 40, RED);
+    DrawText("x", 965, 15, 40, BLACK);
 }
 
 void Play(Rectangle mousepos, Rectangle play) {
@@ -322,6 +322,87 @@ void Rules(Rectangle mousepos, Rectangle rules) {
                 ClearBackground(BLACK);
                 DrawText(TextSubtext(message, 0, framesCounter / 5), 210, 160, 40, WHITE);
                 DrawText("(SPACE) Salida Rapida.", 670, 10, 30, WHITE);
+                EndDrawing();
+            }
+
+        }
+    }
+}
+
+void Options(Rectangle mousepos, Rectangle options) {
+    if (CheckCollisionRecs(mousepos, options))
+    {
+        DrawOptions(1);
+        DrawText("OPCIONES", screenWidth / 2 - 130, screenHeight / 2 + 250, 50, WHITE);
+
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+        {     
+            EndDrawing();
+            
+            exitGameplay = false;
+            while (!exitGameplay)
+            {
+                ClearBackground(BLACK);
+
+                PlayMusicMenu(isMenu);             
+                Rectangle mousepos = { (float)GetMouseX(), (float)GetMouseY(), 1, 1 };
+                Rectangle fullscren = { screenWidth / 2 - 240, screenHeight / 2 - 270, 500, 100 };
+                Rectangle defaultscreen = { screenWidth / 2 - 240, screenHeight / 2 - 70, 500, 100 };
+
+                BeginDrawing();
+
+                DrawText("Resolucion de Pantalla", screenWidth / 2 - 280, screenHeight / 2 - 350, 50, WHITE);
+
+                if (CheckCollisionRecs(mousepos, fullscren) && !isOnOption)
+                {
+                    DrawRectangleRec(fullscren, RED);
+                    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+                    {
+                        isOnOption = true;
+                        ToggleFullscreen();
+                    }
+                }
+                else if (isOnOption)
+                {
+                    DrawRectangleRec(fullscren, GREEN);
+                }else
+                {
+                    DrawRectangleRec(fullscren, WHITE);
+                }
+
+
+
+                
+                if (CheckCollisionRecs(mousepos, defaultscreen) && isOnOption)
+                {
+                    DrawRectangleRec(defaultscreen, RED);
+                    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+                    {
+                        isOnOption = false;
+                        ToggleFullscreen();
+                    }
+                }
+                else if (!isOnOption)
+                {
+                    DrawRectangleRec(defaultscreen, GREEN);
+                }
+                else
+                {
+                    DrawRectangleRec(defaultscreen, WHITE);
+                }
+                
+          
+                DrawText("FULLSCREEN", screenWidth / 2 - 150, screenHeight / 2 - 250, 50, BLACK);
+                DrawText("1024 X 768", screenWidth / 2 - 125, screenHeight / 2 - 50, 50, BLACK);
+
+
+
+               
+
+                if (IsKeyPressed(KEY_ESCAPE))
+                {
+                    exitGameplay = true;
+                }
                 EndDrawing();
             }
 

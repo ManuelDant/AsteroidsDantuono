@@ -70,6 +70,17 @@ void DrawOptionCredits(bool isOn) {
     }
 }
 
+void DrawOptions(bool isOn) {
+    if (!isOn)
+    {
+        DrawTexture(option, GetScreenWidth() / 2 - 260, GetScreenHeight() / 2 - 10, WHITE);
+    }
+    else
+    {
+        DrawTexture(option, GetScreenWidth() / 2 - 260, GetScreenHeight() / 2 - 10, RED);
+    }
+}
+
 void DrawTitle() {
     title.width = 1000;
     title.height = 700;

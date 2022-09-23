@@ -13,8 +13,8 @@ static int framesCounter;
 
 static Texture2D propeller;
 
-static float frameWidth;   // Sprite one frame rectangle width
-static float frameHeight;           // Sprite one frame rectangle height
+static float frameWidth;
+static float frameHeight;
 static Rectangle frameRec;
 
 void PropellerLogic();

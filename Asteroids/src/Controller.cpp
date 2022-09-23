@@ -19,8 +19,8 @@ void LoadResourcesGame() {
     SetSoundVolume(shipCrash, 0.5f);
     SetSoundVolume(shipShoot, 2);
 
-    frameWidth = (float)(propeller.width / numFrames);   // Sprite one frame rectangle width
-    frameHeight = (float)(propeller.height / numLines);           // Sprite one frame rectangle height
+    frameWidth = (float)(propeller.width / numFrames);
+    frameHeight = (float)(propeller.height / numLines);
     frameRec = { 0, 0, frameWidth, frameHeight };
 }
 
@@ -60,8 +60,6 @@ void PropellerSetup() {
 
 void DrawPropeller() {
     if (active)  DrawTexturePro(propeller, frameRec, { player.position.x, player.position.y, 50, 50 }, { (float)frameWidth - 30, (float)frameHeight - 50 }, player.rotation, WHITE);;
-   
-   
 }
 
 void PropellerLogic() {
@@ -70,8 +68,6 @@ void PropellerLogic() {
         active = true;
 
     }
-
-    // Compute explosion animation frames
     if (active)
     {
         framesCounter += 3;
@@ -98,7 +94,6 @@ void PropellerLogic() {
 
     frameRec.x = frameWidth * currentFrame;
     frameRec.y = frameHeight * currentLine;
-
 }
 
 void PowerUpsSetup() {
@@ -170,7 +165,10 @@ void PowerUpLogic() {
 
     if (powerUp.lifeSpawn > 500) {
         powerUp.lifeSpawn = 0;
-        PowerUpsSetup();
+        if (powerUp2.lifeSpawn == 0)
+        {
+            PowerUpsSetup();
+        }
     }
 
     if (!powerUp.active && powerUp.lifeSpawn == 0)
@@ -195,7 +193,11 @@ void PowerUpLogic() {
 
     if (powerUp2.lifeSpawn > 500) {
         powerUp2.lifeSpawn = 0;
-        PowerUpsSetup();
+        if (powerUp.lifeSpawn == 0)
+        {
+            PowerUpsSetup();
+        }
+        
     }
 
     if (!powerUp2.active && powerUp2.lifeSpawn == 0)
