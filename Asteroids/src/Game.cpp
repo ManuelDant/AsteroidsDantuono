@@ -54,6 +54,7 @@ void SetupGame()
     EnemySetup();
     SetupPlayer();
     SetupMeteor();
+    PowerUpsSetup();
     EndDrawing();
     
 }
@@ -114,12 +115,12 @@ void Update()
 
         if (!pause)
         {
+            PowerUpLogic();
             LogicEnemy();
             MovePlayer();
             ColisionWall();
             ColisionMeteors();
             LogicMeteor();   
-
         }
     }
 }
@@ -130,6 +131,7 @@ void DrawPause() {
         PlayerDraw();
         DrawMeteors();
         DrawEnemy();
+        PowerUpDraw();
 
         Victory(0);
 

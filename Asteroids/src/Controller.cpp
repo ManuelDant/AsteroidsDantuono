@@ -1,6 +1,5 @@
 #include "player.h"
 #include "meteor.h"
-#include "game.h"
 #include "assetsGame.h"
 #include <cmath>
 
@@ -42,6 +41,128 @@ bool CheckColissionsCircles(float c1x, float c1y, float c2x, float c2y, float c1
     return false;
 }
 
+void PowerUpsSetup() {
+    
+    float posx;
+    float posy;
+    float posx2;
+    float posy2;
+    bool correctRange = false;
+
+    powerUp.active = false;
+    powerUp2.active = false;
+
+        posx = GetRandomValue(0, GetScreenWidth());
+        posx2 = GetRandomValue(0, GetScreenWidth());
+
+        while (!correctRange)
+        {
+            if (posx > GetScreenWidth() / 2 && posx < GetScreenWidth() / 2) posx = GetRandomValue(0, GetScreenWidth() - 100);
+            else correctRange = true;
+            if (posx2 > GetScreenWidth() / 2 && posx2 < GetScreenWidth() / 2) posx2 = GetRandomValue(0, GetScreenWidth() - 100);
+            else correctRange = true;
+        }
+
+        correctRange = false;
+
+        posy = GetRandomValue(0, GetScreenHeight());
+        posy2 = GetRandomValue(0, GetScreenHeight());
+
+        while (!correctRange)
+        {
+            if (posy2 > GetScreenHeight() / 2 && posy2 < GetScreenHeight() / 2)  posy2 = GetRandomValue(0, GetScreenHeight() - 100);
+            else correctRange = true;
+            if (posy2 > GetScreenHeight() / 2 && posy2 < GetScreenHeight() / 2)  posy2 = GetRandomValue(0, GetScreenHeight() - 100);
+            else correctRange = true;
+        }        
+
+        powerUp.position = { posx, posy };
+        powerUp2.position = { posx2, posy2 };
+
+        powerUp.radius = 35;
+        powerUp.speed = { 0,0 };
+        powerUp.rotation = 0;
+        powerUp.lifeSpawn = 0;
+
+        powerUp2.radius = 35;
+        powerUp2.speed = { 0,0 };
+        powerUp2.rotation = 0;
+        powerUp2.lifeSpawn = 0;
+
+        checkPower = false;
+    
+}
+
+void PowerUpLogic() {
+    int random = 0;
+    int random2 = 0;
+
+    if (powerUp.active)
+    {
+        if (CheckColissionsCircles(powerUp.position.x, powerUp.position.y, player.position.x, player.position.y, powerUp.radius, 19))
+        {
+            checkPower = true;
+            powerUp.active = false;
+            powerUp.lifeSpawn++;
+            
+        }
+    }
+
+    if (powerUp.lifeSpawn > 500) {
+        powerUp.lifeSpawn = 0;
+        PowerUpsSetup();
+    }
+
+    if (!powerUp.active && powerUp.lifeSpawn == 0)
+    {
+        random = GetRandomValue(0, 500);
+        if (random == 50)
+        {
+            powerUp.active = true;
+        }
+    }
+
+    if (powerUp2.active)
+    {
+        if (CheckColissionsCircles(powerUp2.position.x, powerUp2.position.y, player.position.x, player.position.y, powerUp2.radius, 19))
+        {
+            checkPower = true;
+            powerUp2.active = false;
+            powerUp2.lifeSpawn++;
+            
+        }
+    }
+
+    if (powerUp2.lifeSpawn > 500) {
+        powerUp2.lifeSpawn = 0;
+        PowerUpsSetup();
+    }
+
+    if (!powerUp2.active && powerUp2.lifeSpawn == 0)
+    {
+        random2 = GetRandomValue(0, 500);
+        if (random2 == 50)
+        {
+            powerUp2.active = true;
+        }
+    }
+}
+
+void PowerUpDraw() {
+
+    if (powerUp.active)
+    {
+        DrawCircle(powerUp.position.x, powerUp.position.y, powerUp.radius, GREEN);
+        DrawTextureEx(shootexture, { powerUp.position.x - 197,powerUp.position.y - 197 }, 0, 4, GREEN);
+    }
+
+    if (powerUp2.active)
+    {
+        DrawCircle(powerUp2.position.x, powerUp2.position.y, powerUp2.radius, YELLOW);
+        DrawTextureEx(ship, { powerUp2.position.x + 97,powerUp2.position.y - 105}, 90, 2, YELLOW);
+    }
+}
+
 void EnemySetup() {
     for (int i = 0; i < MaxEnemy; i++)
     {
@@ -81,8 +202,6 @@ void BackgroundGame() {
         scrollingBack -= 5.0f;
   
     if (scrollingBack <= -bgroundgame.width * 2 ) scrollingBack = 0;
-    DrawTextureEx(bgroundgame, { scrollingBack }, 0.0f, 2.0f, WHITE);
-    DrawTextureEx(bgroundgame, { bgroundgame.width * 2 + scrollingBack }, 0.0f, 2.0f, WHITE);
 }
 
 void LogicEnemy() {
@@ -159,23 +278,43 @@ void PlayerDraw() {
     int framewidth = ship.width;
     int frameheight = ship.height;
 
-    BackgroundGame();
-
     Rectangle sourceRec = { 5.0f,5.0f, (float)framewidth,(float)frameheight };
     Rectangle destRec = { player.position.x, player.position.y, 200, 200};
     Vector2 Origin = { (float)framewidth,(float)frameheight };
 
-    DrawTexturePro(ship, sourceRec, destRec, Origin, player.rotation, WHITE);
+    DrawTextureEx(bgroundgame, { scrollingBack }, 0.0f, 2.0f, WHITE);
+    DrawTextureEx(bgroundgame, { bgroundgame.width * 2 + scrollingBack }, 0.0f, 2.0f, WHITE);
+
+    if (!powerUp2.active && checkPower && powerUp2.lifeSpawn > 0){
+        DrawTexturePro(ship, sourceRec, destRec, Origin, player.rotation, YELLOW);
+    }
+    else
+    {
+        DrawTexturePro(ship, sourceRec, destRec, Origin, player.rotation, WHITE);
+    }
+    
 
     PlayMusicStream(background);
-    UpdateMusicStream(background);
+    
 
-    for (int i = 0; i < maxShoots; i++)
-    {
-        if (shoot[i].active) { 
-            DrawTexture(shootexture, shoot[i].position.x - 50, shoot[i].position.y - 50, WHITE); }      
+    if (!powerUp.active && checkPower && powerUp.lifeSpawn > 0) {
+        for (int i = 0; i < maxShoots; i++)
+        {
+            if (shoot[i].active) {
+                DrawTexture(shootexture, shoot[i].position.x - 50, shoot[i].position.y - 50, GREEN);
+            }
+        }
     }
-
+    else
+    {
+        for (int i = 0; i < maxShoots; i++)
+        {
+            if (shoot[i].active) {
+                DrawTexture(shootexture, shoot[i].position.x - 50, shoot[i].position.y - 50, WHITE);
+            }
+        }
+    }
+    
     HideCursor();
     DrawTexturePro(mira, { 5.0f,5.0f, (float)mira.width,(float)mira.height }, { (float)GetMouseX() - 17,(float)GetMouseY() - 5, 250,250 }, { (float)mira.width,(float)mira.height}, 0, WHITE);
 
@@ -219,23 +358,47 @@ void ColisionWall() {
 }
 
 void LogicShoot() {
-    
-    if (IsKeyPressed(KEY_SPACE) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
-    {
-        PlaySoundMulti(shipShoot);
-        for (int i = 0; i < maxShoots; i++)
+    if (!powerUp.active && checkPower && powerUp.lifeSpawn > 0)
+    {      
+        powerUp.lifeSpawn++;
+        if (IsKeyPressed(KEY_SPACE) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
         {
-            if (!shoot[i].active)
+            for (int i = 0; i < 10; i++)
             {
-                shoot[i].position = { player.position.x + sin(player.rotation * DEG2RAD) * (shipHeight), player.position.y - cos(player.rotation * DEG2RAD) * (shipHeight) };
-                shoot[i].active = true;
-                shoot[i].speed.x = 1.5 * sin(player.rotation * DEG2RAD) * playerSpeed;
-                shoot[i].speed.y = 1.5 * cos(player.rotation * DEG2RAD) * playerSpeed;
-                shoot[i].rotation = player.rotation;
-                break;
+                for (int i = 0; i < maxShoots; i++)
+                {
+                    if (!shoot[i].active)
+                    {
+                        PlaySound(shipShoot);
+                        shoot[i].position = { player.position.x + sin(player.rotation * DEG2RAD) * (shipHeight), player.position.y - cos(player.rotation * DEG2RAD) * (shipHeight) };
+                        shoot[i].active = true;
+                        shoot[i].speed.x = 1.5 * sin(player.rotation * DEG2RAD) * playerSpeed;
+                        shoot[i].speed.y = 1.5 * cos(player.rotation * DEG2RAD) * playerSpeed;
+                        shoot[i].rotation = player.rotation;
+                        break;
+                    }
+                }
             }
+            
         }
     }
+        if (IsKeyPressed(KEY_SPACE) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+        {
+            
+            for (int i = 0; i < maxShoots; i++)
+            {
+                if (!shoot[i].active)
+                {
+                    PlaySoundMulti(shipShoot);
+                    shoot[i].position = { player.position.x + sin(player.rotation * DEG2RAD) * (shipHeight), player.position.y - cos(player.rotation * DEG2RAD) * (shipHeight) };
+                    shoot[i].active = true;
+                    shoot[i].speed.x = 1.5 * sin(player.rotation * DEG2RAD) * playerSpeed;
+                    shoot[i].speed.y = 1.5 * cos(player.rotation * DEG2RAD) * playerSpeed;
+                    shoot[i].rotation = player.rotation;
+                    break;
+                }
+            }
+        }
 
     for (int i = 0; i < maxShoots; i++)
     {
@@ -302,6 +465,8 @@ void LogicPlayer() {
     float angulosradianes = atan2(GetMouseY() - player.position.y, GetMouseX() - player.position.x);
     float angulogrados = (180 / PI) * angulosradianes - 270;
 
+    BackgroundGame();
+    UpdateMusicStream(background);
 
     player.rotation = angulogrados;
 
@@ -485,32 +650,46 @@ void LogicMeteor() {
 }
 
 void ColisionMeteors() {
+    if (!powerUp2.active && checkPower && powerUp2.lifeSpawn > 0) {
+        powerUp2.lifeSpawn++;
+    }
+    else {
 
-    for (int a = 0; a < maxBigMeteors; a++)
-    {
-        if (CheckColissionsCircles(player.position.x,player.position.y,bigMeteor[a].position.x, bigMeteor[a].position.y, 19, bigMeteor[a].radius)) 
+        for (int a = 0; a < maxBigMeteors; a++)
         {
-            StopMusicStream(background);
-            PlaySound(shipCrash);
-            DefeatPlayer();
+
+            
+                if (CheckColissionsCircles(player.position.x, player.position.y, bigMeteor[a].position.x, bigMeteor[a].position.y, 19, bigMeteor[a].radius))
+                {
+                    StopMusicStream(background);
+                    PlaySound(shipCrash);
+                    DefeatPlayer();
+                }
+            
+
         }
-        
-    }
 
-    for (int a = 0; a < maxMidMeteors; a++)
-    {
-        if (CheckColissionsCircles(player.position.x, player.position.y, mediumMeteor[a].position.x, mediumMeteor[a].position.y, 19, mediumMeteor[a].radius)) {
-            StopMusicStream(background);
-            PlaySound(shipCrash);
-            DefeatPlayer(); }
-    }
+        for (int a = 0; a < maxMidMeteors; a++)
+        {
+            
+                if (CheckColissionsCircles(player.position.x, player.position.y, mediumMeteor[a].position.x, mediumMeteor[a].position.y, 19, mediumMeteor[a].radius)) {
+                    StopMusicStream(background);
+                    PlaySound(shipCrash);
+                    DefeatPlayer();
+                }
+            
+        }
 
-    for (int a = 0; a < maxSmallMeteors; a++)
-    {
-        if (CheckColissionsCircles(player.position.x, player.position.y, smallMeteor[a].position.x, smallMeteor[a].position.y, 19, smallMeteor[a].radius)) {
-            StopMusicStream(background);
-            PlaySound(shipCrash);
-            DefeatPlayer(); }
+        for (int a = 0; a < maxSmallMeteors; a++)
+        {
+            
+                if (CheckColissionsCircles(player.position.x, player.position.y, smallMeteor[a].position.x, smallMeteor[a].position.y, 19, smallMeteor[a].radius)) {
+                    StopMusicStream(background);
+                    PlaySound(shipCrash);
+                    DefeatPlayer();
+                }
+            
+        }
     }
 
     for (int i = 0; i < maxShoots; i++)
