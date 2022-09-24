@@ -306,6 +306,7 @@ void DrawScore() {
     DrawText(TextFormat("Puntuacion: %i ", score), 10, 10, 20, WHITE);
     DrawText(TextFormat("/ %i ", setupBigmeteor + setupMidmeteor + setupSmallmeteor + 1), GetScreenWidth() - 430, 80, 30, WHITE);
     DrawText(TextFormat("Contador: %i ", destroyedMeteorsCount), GetScreenWidth() - 630, 80, 30, WHITE);
+    DrawText(TextFormat("Nivel: %i ", level), GetScreenWidth() - 750, 10, 20, WHITE);
     if (maxScore < score)
     {
         maxScore = score;
@@ -588,13 +589,14 @@ void SetupMeteor(bool isVictory) {
         setupBigmeteor += 2;
         setupMidmeteor += 4;
         setupSmallmeteor += 8;
+        level++;
     }
     if (!isVictory)
     {  
             setupBigmeteor = 5 ;
             setupMidmeteor = 10;
             setupSmallmeteor = 20;
-      
+            level = 1;     
     }    
     for (int i = 0; i < setupBigmeteor; i++)
     {
@@ -699,7 +701,7 @@ void DrawMeteors() {
 
 void LogicMeteor() {
 
-    for (int i = 0; i < maxBigMeteors; i++)
+    for (int i = 0; i < setupBigmeteor; i++)
     {
         if (bigMeteor[i].active)
         {
@@ -715,7 +717,7 @@ void LogicMeteor() {
     }
 
 
-    for (int i = 0; i < maxMidMeteors; i++)
+    for (int i = 0; i < setupMidmeteor; i++)
     {
         if (mediumMeteor[i].active)
         {
@@ -732,7 +734,7 @@ void LogicMeteor() {
     }
 
 
-    for (int i = 0; i < maxSmallMeteors; i++)
+    for (int i = 0; i < setupSmallmeteor; i++)
     {
         if (smallMeteor[i].active)
         {
@@ -755,7 +757,7 @@ void ColisionMeteors() {
     }
     else {
 
-        for (int a = 0; a < maxBigMeteors; a++)
+        for (int a = 0; a < setupBigmeteor; a++)
         {           
                 if (CheckColissionsCircles(player.position.x, player.position.y, bigMeteor[a].position.x, bigMeteor[a].position.y, 19, bigMeteor[a].radius))
                 {
@@ -768,7 +770,7 @@ void ColisionMeteors() {
 
         }
 
-        for (int a = 0; a < maxMidMeteors; a++)
+        for (int a = 0; a < setupMidmeteor; a++)
         {         
                 if (CheckColissionsCircles(player.position.x, player.position.y, mediumMeteor[a].position.x, mediumMeteor[a].position.y, 19, mediumMeteor[a].radius)) {
                     StopMusicStream(background);
@@ -779,7 +781,7 @@ void ColisionMeteors() {
             
         }
 
-        for (int a = 0; a < maxSmallMeteors; a++)
+        for (int a = 0; a < setupSmallmeteor; a++)
         {           
                 if (CheckColissionsCircles(player.position.x, player.position.y, smallMeteor[a].position.x, smallMeteor[a].position.y, 19, smallMeteor[a].radius)) {
                     StopMusicStream(background);
@@ -795,7 +797,7 @@ void ColisionMeteors() {
     {
         if ((shoot[i].active))
         {
-            for (int a = 0; a < maxBigMeteors; a++)
+            for (int a = 0; a < setupBigmeteor; a++)
             {
                 if (bigMeteor[a].active && CheckColissionsCircles(shoot[i].position.x, shoot[i].position.y, bigMeteor[a].position.x, bigMeteor[a].position.y, shoot[i].radius, bigMeteor[a].radius))
                 {
@@ -823,11 +825,11 @@ void ColisionMeteors() {
                         midMeteorsCount++;
                     }
                     bigMeteor[a].position = { -100, -100 };
-                    a = maxBigMeteors;
+                    a = setupBigmeteor;
                 }
             }
 
-            for (int b = 0; b < maxMidMeteors; b++)
+            for (int b = 0; b < setupMidmeteor; b++)
             {
                 if (mediumMeteor[b].active && CheckColissionsCircles(shoot[i].position.x, shoot[i].position.y, mediumMeteor[b].position.x, mediumMeteor[b].position.y, shoot[i].radius, mediumMeteor[b].radius))
                 {
@@ -855,11 +857,11 @@ void ColisionMeteors() {
                         smallMeteorsCount++;
                     }
                     mediumMeteor[b].position = { -100, -100 };
-                    b = maxMidMeteors;
+                    b = setupMidmeteor;
                 }
             }
 
-            for (int c = 0; c < maxSmallMeteors; c++)
+            for (int c = 0; c < setupSmallmeteor; c++)
             {
                 if (smallMeteor[c].active && CheckColissionsCircles(shoot[i].position.x, shoot[i].position.y, smallMeteor[c].position.x, smallMeteor[c].position.y, shoot[i].radius, smallMeteor[c].radius))
                 {
@@ -870,7 +872,7 @@ void ColisionMeteors() {
                     smallMeteor[c].active = false;
                     destroyedMeteorsCount++;
                     smallMeteor[c].position = { -100, -100 };
-                    c = maxSmallMeteors;
+                    c = setupSmallmeteor;
                 }
             }
         }

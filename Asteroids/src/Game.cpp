@@ -31,11 +31,8 @@ void RunGame()
     LoadResourcesMenu();
     SetTargetFPS(60);
 
-    
-
     while (!exitWindows && !WindowShouldClose())
     {
-        
         Menu();
 
     }
@@ -260,8 +257,8 @@ void Credits(Rectangle mousepos, Rectangle credits) {
             while (!exitGameplay)
             {
                 PlayMusicMenu(isMenu);
-                int finalmessage = 1000;
-                const char message[128] = "Testeando el mensaje...";
+                int finalmessage = 10000;
+                const char message[700] = "Juego Creado por Manuel Dantuono \nTexturas de Asteroides, Nave y Disparos hechos por Manuel Dantuono\n\nSonido de Juego: ( Close Combat ) por Fredrik Ekstrom. \nwww.epidemicsound.com/track/vnourn9aT7/9\nSonido del Menu: (Fugent) por Lupus Nocte \nwww.epidemicsound.com/track/cAEBqYRFz0/  \nSonido de impacto 1: (Bomb Explosion 3) \nwww.epidemicsound.com/track/ZATPJMOSHa/ \nSonido de impacto 2: (Storefront Crash 1) \nwww.epidemicsound.com/track/lC2s9JHZqR/ \nImagen del Menu: \nclipart-library.com/clipart/space-free-png-image.htm \nImagen dentro del Gameplay: \nopengameart.org/content/space-parallax-background \n\n\n\nJuego hecho con Libreria Raylib.";
                 
                 if (IsKeyDown(KEY_SPACE))
                 {
@@ -275,11 +272,11 @@ void Credits(Rectangle mousepos, Rectangle credits) {
                 BeginDrawing();
 
                 if (IsKeyDown(KEY_ENTER)) framesCounter += 8;
-                else framesCounter++;
+                else framesCounter += 4;
 
                 ClearBackground(BLACK);
-                DrawText(TextSubtext(message, 0, framesCounter / 5), 210, 160, 40, WHITE);
-                DrawText("(SPACE) Salida Rapida.", 670, 10, 30, WHITE);
+                DrawText(TextSubtext(message, 0, framesCounter / 5), 1, 1, 27, WHITE);
+                DrawText("(SPACE) Salida Rapida | (Enter) Mas velocidad.", 550, 1, 20, WHITE);
                 EndDrawing();
             }
             
@@ -290,39 +287,32 @@ void Credits(Rectangle mousepos, Rectangle credits) {
 void Rules(Rectangle mousepos, Rectangle rules) {
     if (CheckCollisionRecs(mousepos, rules))
     {
+        
         DrawOptionRules(1);
         DrawText("REGLAS", screenWidth / 2 - 440, screenHeight / 2 + 50, 60, WHITE);
 
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
         {
-
+            newImage = 1;
             EndDrawing();
             exitGameplay = false;
-            framesCounter = 0;
+           
             while (!exitGameplay)
             {
                 PlayMusicMenu(isMenu);
-                int finalmessage = 1000;
-                const char message[128] = "Testeando el mensaje...";
-
-                if (IsKeyDown(KEY_SPACE))
+                BeginDrawing();
+                ClearBackground(BLACK);
+                if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_SPACE))
                 {
-                    framesCounter = finalmessage + 1;
+                    newImage++;
                 }
-                if (framesCounter > finalmessage)
+
+                DrawRules(newImage);
+                if (newImage > 3)
                 {
                     exitGameplay = true;
                 }
-
-
-                BeginDrawing();
-
-                if (IsKeyDown(KEY_ENTER)) framesCounter += 8;
-                else framesCounter++;
-
-                ClearBackground(BLACK);
-                DrawText(TextSubtext(message, 0, framesCounter / 5), 210, 160, 40, WHITE);
-                DrawText("(SPACE) Salida Rapida.", 670, 10, 30, WHITE);
+                
                 EndDrawing();
             }
 
@@ -343,8 +333,9 @@ void Options(Rectangle mousepos, Rectangle options) {
             exitGameplay = false;
             while (!exitGameplay)
             {
+                
                 ClearBackground(BLACK);
-
+                DrawText("(SPACE) Salir", 820, 1, 30, WHITE);
                 PlayMusicMenu(isMenu);             
                 Rectangle mousepos = { (float)GetMouseX(), (float)GetMouseY(), 1, 1 };
                 Rectangle fullscren = { screenWidth / 2 - 240, screenHeight / 2 - 270, 500, 100 };
@@ -400,7 +391,7 @@ void Options(Rectangle mousepos, Rectangle options) {
 
                
 
-                if (IsKeyPressed(KEY_ESCAPE))
+                if (IsKeyPressed(KEY_SPACE))
                 {
                     exitGameplay = true;
                 }

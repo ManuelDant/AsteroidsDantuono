@@ -13,18 +13,17 @@ static Texture2D meteorTexture;
 static Sound meteorImpact;
 
 const int speedMeteros = 2;
-const int maxBigMeteors = 50;
-const int maxMidMeteors = 100;
-const int maxSmallMeteors = 200;
 static int setupBigmeteor = 0;
 static int setupMidmeteor = 0;
 static int setupSmallmeteor = 0;
+static int level = 1;
+
 static int score = 0;
 static int maxScore = 0;
 
-static Meteor bigMeteor[maxBigMeteors];
-static Meteor mediumMeteor[maxMidMeteors];
-static Meteor smallMeteor[maxSmallMeteors];
+static Meteor bigMeteor[50];
+static Meteor mediumMeteor[100];
+static Meteor smallMeteor[200];
 
 static int midMeteorsCount = 0;
 static int smallMeteorsCount = 0;
