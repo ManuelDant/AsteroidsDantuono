@@ -15,13 +15,13 @@ bool gameover = false;
 bool pause = false;
 bool isOnOption = false;
 
-
-void SetupGame();
+void SetupGame(bool isVictory);
 void DrawPause();
 void Update();
 void DrawGame();
 void Menu();
 void RestartPreGameplay();
+void DrawScoreMenu();
 
 void RunGame()
 {
@@ -46,12 +46,12 @@ void RunGame()
     CloseWindow();
 }
 
-void SetupGame()
+void SetupGame(bool isVictory)
 {
     BeginDrawing();
+    SetupMeteor(isVictory);
     EnemySetup();
     SetupPlayer();
-    SetupMeteor();
     PowerUpsSetup();
     PropellerSetup();
     EndDrawing();
@@ -80,7 +80,7 @@ void Restart() {
     {
         if (IsKeyPressed(KEY_SPACE))
         {
-            SetupGame();
+            SetupGame(0);
             gameover = false;
         }
 
@@ -94,12 +94,14 @@ void Restart() {
 void Victory(bool victory) {
 
     if (victory) 
-    { DrawText("VICTORIA!!", screenWidth / 2 - MeasureText("VICTORIA!!", 20) / 2, screenHeight / 2, 50, LIGHTGRAY); }
+    { DrawText("Nivel Completado!!", screenWidth / 2 - MeasureText("Nivel Completado!!", 20) / 2 - 130, screenHeight / 2 - 50, 50, GREEN);
+    DrawText("(Enter) Para continuar", screenWidth / 2 - MeasureText("(Enter) Para continuar", 20) / 2 - 150, screenHeight / 2 , 50, GREEN);
+    }
 
     
         if (IsKeyPressed(KEY_ENTER) && victory == true)
         {
-            SetupGame();
+            SetupGame(1);
             gameover = false;
         }
     
@@ -127,8 +129,7 @@ void Update()
 
 void DrawPause() {
     if (!gameover)
-    {
-        
+    {      
         PlayerDraw();
         DrawMeteors();
         DrawEnemy();
@@ -139,7 +140,7 @@ void DrawPause() {
         if (pause) DrawText("Pausa! (ESC para reanudar | SPACE para salir)", screenWidth / 2 - MeasureText("Pausa! (ESC para reanudar | SPACE para salir)", 5) / 2 - 250, screenHeight / 2 - 40, 30, DARKPURPLE);
     }
     else {
-        DrawText("Presiona (SPACE) para volver a jugar", GetScreenWidth() / 2 - MeasureText("Presiona (SPACE) para volver a jugar", 20) / 2 - 300, GetScreenHeight() / 2 - 50, 50, RED);
+        DrawText("Presiona (SPACE) para volver a jugar", GetScreenWidth() / 2 - MeasureText("Presiona (SPACE) para volver a jugar", 20) / 2 - 300, GetScreenHeight() / 2 - 50, 50, RED);      
         DrawText("Para salir presione (ESC)", screenWidth / 2 - 50, screenHeight / 2 + 340, 40, RED);
     }
     Restart();
@@ -148,7 +149,7 @@ void DrawPause() {
 void Menu() {
     isMenu = true;
     BackgroundMenu();
-
+    DrawScoreMenu();
     PlayMusicMenu(isMenu);
     Rectangle mousepos = { (float)GetMouseX(), (float)GetMouseY(), 1, 1 };
     Rectangle play = { screenWidth / 2 - 150, screenHeight / 2, 300, 150 };
@@ -211,7 +212,7 @@ void Play(Rectangle mousepos, Rectangle play) {
         {
             PlayMusicMenu(!isMenu);
             EndDrawing();
-            SetupGame();
+            SetupGame(0);
             RestartPreGameplay();
             while (!exitGameplay)
             {

@@ -13,9 +13,14 @@ static Texture2D meteorTexture;
 static Sound meteorImpact;
 
 const int speedMeteros = 2;
-const int maxBigMeteors = 5;
-const int maxMidMeteors = 10;
-const int maxSmallMeteors = 20;
+const int maxBigMeteors = 50;
+const int maxMidMeteors = 100;
+const int maxSmallMeteors = 200;
+static int setupBigmeteor = 0;
+static int setupMidmeteor = 0;
+static int setupSmallmeteor = 0;
+static int score = 0;
+static int maxScore = 0;
 
 static Meteor bigMeteor[maxBigMeteors];
 static Meteor mediumMeteor[maxMidMeteors];
@@ -27,5 +32,5 @@ static int destroyedMeteorsCount = 0;
 
 void ColisionMeteors();
 void LogicMeteor();
-void SetupMeteor();
+void SetupMeteor(bool isVictory);
 void DrawMeteors();
