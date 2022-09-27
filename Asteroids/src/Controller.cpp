@@ -15,9 +15,10 @@ void LoadResourcesGame() {
     meteorImpact = LoadSound("meteorImpact.mp3");
     shipCrash = LoadSound("shipCrash.mp3");
     background = LoadMusicStream("music.mp3");  
-    SetSoundVolume(meteorImpact, 0.3f);    
-    SetSoundVolume(shipCrash, 0.5f);
-    SetSoundVolume(shipShoot, 2);
+    SetSoundVolume(meteorImpact, -0.05f);
+    SetSoundVolume(shipCrash, -0.05f);
+    SetSoundVolume(shipShoot, -0.3);
+    SetMusicVolume(background, -0.1f);
 
     frameWidth = (float)(propeller.width / numFrames);
     frameHeight = (float)(propeller.height / numLines);

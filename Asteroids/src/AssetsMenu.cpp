@@ -9,7 +9,7 @@ void LoadResourcesMenu() {
     imgPowerUps = LoadTexture("rsc/imagePowerUps.png");
     controls = LoadTexture("rsc/controls.png");
 
-    SetMusicVolume(menubg, 0.5f);
+    SetMusicVolume(menubg, -0.05f);
 
     bground.width = 1500;
     bground.height = 400;
