@@ -9,6 +9,7 @@ const int screenWidth = 1024;
 const int screenHeight = 768;
 
 bool isMenu = false;
+bool exitWindowRequested = false;
 bool exitWindows = false;
 bool exitGameplay = false;
 bool gameover = false;
@@ -175,15 +176,22 @@ void Menu() {
 
     if (IsKeyPressed(KEY_ESCAPE))
     {
-        exitWindows = true;
+        exitWindowRequested = true;
     }
 
+    if (exitWindowRequested)
+    {
+        DrawText("Seguro que quieres salir? [Y/N]", screenWidth / 2 - 400, screenHeight / 2 - 70, 50, WHITE);
+        if (IsKeyPressed(KEY_Y)) exitWindows = true;
+        else if (IsKeyPressed(KEY_N)) exitWindowRequested = false;
+    }
     EndDrawing();
     SetExitKey(NULL);
 }
 
 void RestartPreGameplay() {
     exitGameplay = false;
+    exitWindowRequested = false;
     if (pause)
     {
         pause = false;
@@ -211,7 +219,7 @@ void Play(Rectangle mousepos, Rectangle play) {
             EndDrawing();
             SetupGame(0);
             RestartPreGameplay();
-            while (!exitGameplay)
+            while (!exitGameplay && !WindowShouldClose())
             {
                 Update();
                 DrawGame();
@@ -238,7 +246,7 @@ void Exit(Rectangle mousepos, Rectangle exit) {
 
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
         {
-            exitWindows = true;
+            exitWindowRequested = true;
         }
     }
 }
@@ -251,10 +259,11 @@ void Credits(Rectangle mousepos, Rectangle credits) {
 
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
         {
+            exitWindowRequested = false;
             EndDrawing();
             exitGameplay = false;
             framesCounter = 0;
-            while (!exitGameplay)
+            while (!exitGameplay && !WindowShouldClose())
             {
                 PlayMusicMenu(isMenu);
                 int finalmessage = 10000;
@@ -293,11 +302,12 @@ void Rules(Rectangle mousepos, Rectangle rules) {
 
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
         {
+            exitWindowRequested = false;
             newImage = 1;
             EndDrawing();
             exitGameplay = false;
            
-            while (!exitGameplay)
+            while (!exitGameplay && !WindowShouldClose())
             {
                 PlayMusicMenu(isMenu);
                 BeginDrawing();
@@ -328,10 +338,11 @@ void Options(Rectangle mousepos, Rectangle options) {
 
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
         {     
+            exitWindowRequested = false;
             EndDrawing();
             
             exitGameplay = false;
-            while (!exitGameplay)
+            while (!exitGameplay && !WindowShouldClose())
             {
                 
                 ClearBackground(BLACK);
