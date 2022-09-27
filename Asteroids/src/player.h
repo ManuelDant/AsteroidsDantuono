@@ -20,7 +20,7 @@ struct Shoot {
     Color color;
 };
 
-const int maxShoots = 5;
+const int maxShoots = 15;
 static bool hitbox = false;
 
 static Player player;
