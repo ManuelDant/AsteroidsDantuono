@@ -11,10 +11,10 @@ void LoadResourcesGame() {
     mira = LoadTexture("rsc/mira.png");
     propeller = LoadTexture("rsc/propeller.png");
     bgroundgame = LoadTexture("rsc/bgroundgame.png");
-    shipShoot = LoadSound("shoot.mp3");
-    meteorImpact = LoadSound("meteorImpact.mp3");
-    shipCrash = LoadSound("shipCrash.mp3");
-    background = LoadMusicStream("music.mp3");
+    shipShoot = LoadSound("rsc/shoot.mp3");
+    meteorImpact = LoadSound("rsc/meteorImpact.mp3");
+    shipCrash = LoadSound("rsc/shipCrash.mp3");
+    background = LoadMusicStream("rsc/music.mp3");
     SetSoundVolume(meteorImpact, -0.05f);
     SetSoundVolume(shipCrash, -0.05f);
     SetSoundVolume(shipShoot, -0.3);

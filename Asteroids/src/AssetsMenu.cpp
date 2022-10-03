@@ -4,7 +4,7 @@ void LoadResourcesMenu() {
     title = LoadTexture("rsc/title.png");
     bground = LoadTexture("rsc/bground.png");
     option = LoadTexture("rsc/option.png");
-    menubg = LoadMusicStream("menubg.mp3");
+    menubg = LoadMusicStream("rsc/menubg.mp3");
     imgEnemy = LoadTexture("rsc/imageEnemy.png");
     imgPowerUps = LoadTexture("rsc/imagePowerUps.png");
     controls = LoadTexture("rsc/controls.png");
