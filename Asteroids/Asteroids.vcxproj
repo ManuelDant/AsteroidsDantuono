@@ -23,10 +23,12 @@
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Controller.cpp" />
+    <ClCompile Include="src\PropellerAnimated.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\assetsGame.h" />
     <ClInclude Include="src\assetsMenu.h" />
+    <ClInclude Include="src\powerUps.h" />
     <ClInclude Include="src\propellerAnimated.h" />
     <ClInclude Include="src\game.h" />
     <ClInclude Include="src\meteor.h" />

@@ -1,5 +1,6 @@
 #pragma once
 #include "raylib.h"
+#include "player.h"
 
 static int numFrames = 10;
 static int numLines = 6;
@@ -19,4 +20,6 @@ static Rectangle frameRec;
 
 void PropellerLogic();
 void PropellerSetup();
-void DrawPropeller();
+void DrawPropeller(Player& player);
+void LoadResourcePropeller();
+void UnloadResourcePropeller();

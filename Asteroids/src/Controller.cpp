@@ -1,28 +1,25 @@
+#include "propellerAnimated.h"
 #include "player.h"
+#include "powerUps.h"
 #include "meteor.h"
 #include "assetsGame.h"
-#include "propellerAnimated.h"
 #include <cmath>
 
 void LoadResourcesGame() {
     meteorTexture = LoadTexture("rsc/meteor.png");
     ship = LoadTexture("rsc/ship.png");
-    shootexture = LoadTexture("rsc/shoot.png");
     mira = LoadTexture("rsc/mira.png");
-    propeller = LoadTexture("rsc/propeller.png");
     bgroundgame = LoadTexture("rsc/bgroundgame.png");
     shipShoot = LoadSound("rsc/shoot.mp3");
     meteorImpact = LoadSound("rsc/meteorImpact.mp3");
     shipCrash = LoadSound("rsc/shipCrash.mp3");
     background = LoadMusicStream("rsc/music.mp3");
+    shootexture = LoadTexture("rsc/shoot.png");
     SetSoundVolume(meteorImpact, -0.05f);
     SetSoundVolume(shipCrash, -0.05f);
     SetSoundVolume(shipShoot, -0.3);
     SetMusicVolume(background, -0.1f);
-
-    frameWidth = (float)(propeller.width / numFrames);
-    frameHeight = (float)(propeller.height / numLines);
-    frameRec = { 0, 0, frameWidth, frameHeight };
+    LoadResourcePropeller();
 }
 
 void UnloadResourcesGame() {
@@ -31,11 +28,10 @@ void UnloadResourcesGame() {
     UnloadSound(shipCrash);
     UnloadMusicStream(background);
     UnloadTexture(ship);
-    UnloadTexture(shootexture);
     UnloadTexture(meteorTexture);
     UnloadTexture(mira);
     UnloadTexture(bgroundgame);
-    UnloadTexture(propeller);
+    UnloadResourcePropeller();
 }
 
 bool CheckColissionsCircles(float c1x, float c1y, float c2x, float c2y, float c1r, float c2r) {
@@ -47,183 +43,6 @@ bool CheckColissionsCircles(float c1x, float c1y, float c2x, float c2y, float c1
         return true;
     }
     return false;
-}
-
-void PropellerSetup() {
-    int currentFrame = 0;
-    int currentLine = 0;
-
-    Vector2 position = { 0.0f, 0.0f };
-
-    bool active = false;
-    int framesCounter = 0;
-}
-
-void DrawPropeller() {
-    if (active)  DrawTexturePro(propeller, frameRec, { player.position.x, player.position.y, 50, 50 }, { (float)frameWidth - 30, (float)frameHeight - 50 }, player.rotation, WHITE);;
-}
-
-void PropellerLogic() {
-    if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))
-    {
-        active = true;
-
-    }
-    if (active)
-    {
-        framesCounter += 3;
-
-        if (framesCounter > 2)
-        {
-            currentFrame += 3;
-
-            if (currentFrame >= numFrames)
-            {
-                currentFrame = 0;
-                currentLine += 1;
-
-                if (currentLine >= numLines)
-                {
-                    currentLine = 0;
-                    active = false;
-                }
-            }
-
-            framesCounter = 0;
-        }
-    }
-
-    frameRec.x = frameWidth * currentFrame;
-    frameRec.y = frameHeight * currentLine;
-}
-
-void PowerUpsSetup() {
-
-    float posx;
-    float posy;
-    float posx2;
-    float posy2;
-    bool correctRange = false;
-
-    powerUp.active = false;
-    powerUp2.active = false;
-
-    posx = GetRandomValue(0, GetScreenWidth());
-    posx2 = GetRandomValue(0, GetScreenWidth());
-
-    while (!correctRange)
-    {
-        if (posx > GetScreenWidth() / 2 && posx < GetScreenWidth() / 2) posx = GetRandomValue(0, GetScreenWidth() - 100);
-        else correctRange = true;
-        if (posx2 > GetScreenWidth() / 2 && posx2 < GetScreenWidth() / 2) posx2 = GetRandomValue(0, GetScreenWidth() - 100);
-        else correctRange = true;
-    }
-
-    correctRange = false;
-
-    posy = GetRandomValue(0, GetScreenHeight());
-    posy2 = GetRandomValue(0, GetScreenHeight());
-
-    while (!correctRange)
-    {
-        if (posy2 > GetScreenHeight() / 2 && posy2 < GetScreenHeight() / 2)  posy2 = GetRandomValue(0, GetScreenHeight() - 100);
-        else correctRange = true;
-        if (posy2 > GetScreenHeight() / 2 && posy2 < GetScreenHeight() / 2)  posy2 = GetRandomValue(0, GetScreenHeight() - 100);
-        else correctRange = true;
-    }
-
-    powerUp.position = { posx, posy };
-    powerUp2.position = { posx2, posy2 };
-
-    powerUp.radius = 35;
-    powerUp.speed = { 0,0 };
-    powerUp.rotation = 0;
-    powerUp.lifeSpawn = 0;
-
-    powerUp2.radius = 35;
-    powerUp2.speed = { 0,0 };
-    powerUp2.rotation = 0;
-    powerUp2.lifeSpawn = 0;
-
-    checkPower = false;
-
-}
-
-void PowerUpLogic() {
-    int random = 0;
-    int random2 = 0;
-
-    if (powerUp.active)
-    {
-        if (CheckColissionsCircles(powerUp.position.x, powerUp.position.y, player.position.x, player.position.y, powerUp.radius, 19))
-        {
-            checkPower = true;
-            powerUp.active = false;
-            powerUp.lifeSpawn++;
-
-        }
-    }
-
-    if (powerUp.lifeSpawn > 500) {
-        powerUp.lifeSpawn = 0;
-        if (powerUp2.lifeSpawn == 0)
-        {
-            PowerUpsSetup();
-        }
-    }
-
-    if (!powerUp.active && powerUp.lifeSpawn == 0)
-    {
-        random = GetRandomValue(0, 500);
-        if (random == 50)
-        {
-            powerUp.active = true;
-        }
-    }
-
-    if (powerUp2.active)
-    {
-        if (CheckColissionsCircles(powerUp2.position.x, powerUp2.position.y, player.position.x, player.position.y, powerUp2.radius, 19))
-        {
-            checkPower = true;
-            powerUp2.active = false;
-            powerUp2.lifeSpawn++;
-
-        }
-    }
-
-    if (powerUp2.lifeSpawn > 500) {
-        powerUp2.lifeSpawn = 0;
-        if (powerUp.lifeSpawn == 0)
-        {
-            PowerUpsSetup();
-        }
-
-    }
-
-    if (!powerUp2.active && powerUp2.lifeSpawn == 0)
-    {
-        random2 = GetRandomValue(0, 500);
-        if (random2 == 50)
-        {
-            powerUp2.active = true;
-        }
-    }
-}
-
-void PowerUpDraw() {
-
-    if (powerUp.active)
-    {
-        DrawCircle(powerUp.position.x, powerUp.position.y, powerUp.radius, GREEN);
-        DrawTextureEx(shootexture, { powerUp.position.x - 197,powerUp.position.y - 197 }, 0, 4, GREEN);
-    }
-
-    if (powerUp2.active)
-    {
-        DrawCircle(powerUp2.position.x, powerUp2.position.y, powerUp2.radius, YELLOW);
-        DrawTextureEx(ship, { powerUp2.position.x + 97,powerUp2.position.y - 105 }, 90, 2, YELLOW);
-    }
 }
 
 void EnemySetup() {
@@ -365,12 +184,11 @@ void DrawEnemy() {
 void PlayerDraw() {
     int framewidth = ship.width;
     int frameheight = ship.height;
-
+   
     Rectangle sourceRec = { 5.0f,5.0f, (float)framewidth,(float)frameheight };
     Rectangle destRec = { player.position.x, player.position.y, 200, 200 };
     Vector2 Origin = { (float)framewidth,(float)frameheight };
 
-    PropellerLogic();
 
     DrawTextureEx(bgroundgame, { scrollingBack }, 0.0f, 2.0f, WHITE);
     DrawTextureEx(bgroundgame, { bgroundgame.width * 2 + scrollingBack }, 0.0f, 2.0f, WHITE);
@@ -382,7 +200,6 @@ void PlayerDraw() {
     {
         DrawTexturePro(ship, sourceRec, destRec, Origin, player.rotation, WHITE);
     }
-    DrawPropeller();
     PlayMusicStream(background);
 
 
@@ -404,7 +221,7 @@ void PlayerDraw() {
             }
         }
     }
-
+    DrawPropeller(player);
     HideCursor();
     DrawTexturePro(mira, { 5.0f,5.0f, (float)mira.width,(float)mira.height }, { (float)GetMouseX() - 17,(float)GetMouseY() - 5, 250,250 }, { (float)mira.width,(float)mira.height }, 0, WHITE);
 
@@ -888,6 +705,139 @@ void ColisionMeteors() {
                     c = setupSmallmeteor;
                 }
             }
+        }
+    }
+}
+
+
+//LOGIC POWER UPS
+void PowerUpsSetup() {
+
+    float posx;
+    float posy;
+    float posx2;
+    float posy2;
+    bool correctRange = false;
+
+    powerUp.active = false;
+    powerUp2.active = false;
+
+    posx = GetRandomValue(0, GetScreenWidth());
+    posx2 = GetRandomValue(0, GetScreenWidth());
+
+    while (!correctRange)
+    {
+        if (posx > GetScreenWidth() / 2 && posx < GetScreenWidth() / 2) posx = GetRandomValue(0, GetScreenWidth() - 100);
+        else correctRange = true;
+        if (posx2 > GetScreenWidth() / 2 && posx2 < GetScreenWidth() / 2) posx2 = GetRandomValue(0, GetScreenWidth() - 100);
+        else correctRange = true;
+    }
+
+    correctRange = false;
+
+    posy = GetRandomValue(0, GetScreenHeight());
+    posy2 = GetRandomValue(0, GetScreenHeight());
+
+    while (!correctRange)
+    {
+        if (posy2 > GetScreenHeight() / 2 && posy2 < GetScreenHeight() / 2)  posy2 = GetRandomValue(0, GetScreenHeight() - 100);
+        else correctRange = true;
+        if (posy2 > GetScreenHeight() / 2 && posy2 < GetScreenHeight() / 2)  posy2 = GetRandomValue(0, GetScreenHeight() - 100);
+        else correctRange = true;
+    }
+
+    powerUp.position = { posx, posy };
+    powerUp2.position = { posx2, posy2 };
+
+    powerUp.radius = 35;
+    powerUp.speed = { 0,0 };
+    powerUp.rotation = 0;
+    powerUp.lifeSpawn = 0;
+
+    powerUp2.radius = 35;
+    powerUp2.speed = { 0,0 };
+    powerUp2.rotation = 0;
+    powerUp2.lifeSpawn = 0;
+
+    checkPower = false;
+
+}
+
+void PowerUpDraw() {
+
+    if (powerUp.active)
+    {
+        DrawCircle(powerUp.position.x, powerUp.position.y, powerUp.radius, GREEN);
+        DrawTextureEx(shootexture, { powerUp.position.x - 197,powerUp.position.y - 197 }, 0, 4, GREEN);
+    }
+
+    if (powerUp2.active)
+    {
+        DrawCircle(powerUp2.position.x, powerUp2.position.y, powerUp2.radius, YELLOW);
+        DrawTextureEx(ship, { powerUp2.position.x + 97,powerUp2.position.y - 105 }, 90, 2, YELLOW);
+    }
+}
+
+void PowerUpLogic() {
+    int random = 0;
+    int random2 = 0;
+
+    if (powerUp.active)
+    {
+        if (CheckColissionsCircles(powerUp.position.x, powerUp.position.y, player.position.x, player.position.y, powerUp.radius, 19))
+        {
+
+            checkPower = true;
+            powerUp.active = false;
+            powerUp.lifeSpawn++;
+
+        }
+    }
+
+    if (powerUp.lifeSpawn > 500) {
+        powerUp.lifeSpawn = 0;
+        if (powerUp2.lifeSpawn == 0)
+        {
+            PowerUpsSetup();
+        }
+    }
+
+    if (!powerUp.active && powerUp.lifeSpawn == 0)
+    {
+        random = GetRandomValue(0, 500);
+        if (random == 50)
+        {
+            powerUp.active = true;
+        }
+    }
+
+    if (powerUp2.active)
+    {
+        if (CheckColissionsCircles(powerUp2.position.x, powerUp2.position.y, player.position.x, player.position.y, powerUp2.radius, 19))
+        {
+
+            checkPower = true;
+            powerUp2.active = false;
+            powerUp2.lifeSpawn++;
+
+        }
+    }
+
+    if (powerUp2.lifeSpawn > 500) {
+        powerUp2.lifeSpawn = 0;
+        if (powerUp.lifeSpawn == 0)
+        {
+            PowerUpsSetup();
+        }
+
+    }
+
+    if (!powerUp2.active && powerUp2.lifeSpawn == 0)
+    {
+        random2 = GetRandomValue(0, 500);
+        if (random2 == 50)
+        {
+            powerUp2.active = true;
         }
     }
 }

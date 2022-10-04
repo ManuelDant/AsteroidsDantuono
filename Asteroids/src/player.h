@@ -29,9 +29,6 @@ static const int MaxEnemy = 1;
 static Player enemy[MaxEnemy];
 
 static Shoot shoot[maxShoots];
-static Shoot powerUp;
-static Shoot powerUp2;
-static bool checkPower;
 
 static float playerBaseSize = 20.0f;
 static float playerSpeed = 6.0f;
@@ -49,9 +46,6 @@ void Victory(bool victory);
 void EnemySetup();
 void DrawEnemy();
 void LogicEnemy();
-void PowerUpsSetup();
-void PowerUpDraw();
-void PowerUpLogic();
 bool CheckColissionsCircles(float c1x, float c1y, float c2x, float c2y, float c1r, float c2r);
 
 

@@ -1,5 +1,6 @@
 #include "player.h"
 #include "meteor.h"
+#include "powerUps.h"
 #include "game.h"
 #include "assetsMenu.h"
 #include "assetsGame.h"
@@ -51,7 +52,6 @@ void SetupGame(bool isVictory)
     EnemySetup();
     SetupPlayer();
     PowerUpsSetup();
-    PropellerSetup();
     EndDrawing();
     
 }
@@ -114,7 +114,6 @@ void Update()
 
         if (!pause)
         {
-            
             PowerUpLogic();
             LogicEnemy();
             MovePlayer();
