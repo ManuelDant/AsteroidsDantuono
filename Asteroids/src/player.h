@@ -47,5 +47,5 @@ void EnemySetup();
 void DrawEnemy();
 void LogicEnemy();
 bool CheckColissionsCircles(float c1x, float c1y, float c2x, float c2y, float c1r, float c2r);
-
+void DrawScore();
 

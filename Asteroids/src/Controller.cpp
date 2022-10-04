@@ -45,149 +45,21 @@ bool CheckColissionsCircles(float c1x, float c1y, float c2x, float c2y, float c1
     return false;
 }
 
-void EnemySetup() {
-    for (int i = 0; i < MaxEnemy; i++)
-    {
-        enemy[i].position = { (float)GetScreenWidth() / 2, (float)GetScreenHeight() / 2 };
-        enemy[i].speed = { 0, 0 };
-        enemy[i].acceleration = 40;
-        enemy[i].rotation = 0;
-        enemy[i].active = true;
-
-        float posx;
-        float posy;
-        bool correctRange = false;
-
-        posx = static_cast<float>(GetRandomValue(0, GetScreenWidth()));
-
-        while (!correctRange)
-        {
-            if (posx > GetScreenWidth() / 2 - 150 && posx < GetScreenWidth() / 2 + 150) posx = static_cast<float>(GetRandomValue(0, GetScreenWidth()));
-            else correctRange = true;
-        }
-
-        correctRange = false;
-
-        posy = static_cast<float>(GetRandomValue(0, GetScreenHeight()));
-
-        while (!correctRange)
-        {
-            if (posy > GetScreenHeight() / 2 - 150 && posy < GetScreenHeight() / 2 + 150)  posy = static_cast<float>(GetRandomValue(0, GetScreenHeight()));
-            else correctRange = true;
-        }
-
-        enemy[i].position = { posx, posy };
-    }
-}
-
 void BackgroundGame() {
     scrollingBack -= 5.0f;
 
     if (scrollingBack <= -bgroundgame.width * 2) scrollingBack = 0;
 }
 
-void LogicEnemy() {
-    for (int i = 0; i < MaxEnemy; i++)
-    {
 
-        enemy[i].speed.x = sin(enemy[i].rotation * DEG2RAD) * playerSpeed;
-        enemy[i].speed.y = cos(enemy[i].rotation * DEG2RAD) * playerSpeed;
-
-        enemy[i].position.x += (enemy[i].speed.x * player.acceleration / 4) * GetFrameTime();
-        enemy[i].position.y -= (enemy[i].speed.y * player.acceleration / 4) * GetFrameTime();
-
-        if (enemy[i].position.x > GetScreenWidth() + shipHeight) {
-            enemy[i].active = false;
-        }
-        else if (enemy[i].position.x < -(shipHeight)) {
-            enemy[i].active = false;
-        }
-
-        if (enemy[i].position.y > (GetScreenHeight() + shipHeight)) {
-            enemy[i].active = false;
-        }
-        else if (enemy[i].position.y < -(shipHeight)) {
-            enemy[i].active = false;
-        }
-    }
-}
-
-void DrawScoreMenu() {
-    score = 0;
-
-    if (maxScore > 0)
-    {
-        DrawText(TextFormat("Max. Puntuacion: %i ", maxScore), GetScreenWidth() / 2 - 300, 10, 60, RED);
-    }
-}
-
-void DrawScore() {
-    DrawText(TextFormat("Max. Puntuacion: %i ", maxScore), GetScreenWidth() - 350, 10, 30, RED);
-    DrawText(TextFormat("Puntuacion: %i ", score), 10, 10, 20, WHITE);
-    DrawText(TextFormat("/ %i ", setupBigmeteor + setupMidmeteor + setupSmallmeteor + 1), GetScreenWidth() - 430, 80, 30, WHITE);
-    DrawText(TextFormat("Contador: %i ", destroyedMeteorsCount), GetScreenWidth() - 630, 80, 30, WHITE);
-    DrawText(TextFormat("Nivel: %i ", level), GetScreenWidth() - 750, 10, 20, WHITE);
-    if (maxScore < score)
-    {
-        maxScore = score;
-    }
-    if (maxScore == score && maxScore != 0)
-    {
-        DrawText("NUEVO RECORD", GetScreenWidth() - 630, 10, 30, RED);
-    }
-}
-
-void DrawEnemy() {
-    int framewidth = ship.width;
-    int frameheight = ship.height;
-
-    DrawScore();
-
-    for (int i = 0; i < MaxEnemy; i++)
-    {
-        float angulosradianes = atan2(enemy[i].position.y - player.position.y, enemy[i].position.x - player.position.x);
-        float angulogrados = (180 / PI) * angulosradianes - 90;
-
-
-        Rectangle sourceRec = { 5.0f,5.0f, (float)framewidth,(float)frameheight };
-        Rectangle destRec = { enemy[i].position.x, enemy[i].position.y, 200, 200 };
-        Vector2 Origin = { (float)framewidth,(float)frameheight };
-
-        if (enemy[i].active)
-        {
-            if (CheckColissionsCircles(enemy[i].position.x, enemy[i].position.y, player.position.x, player.position.y, 25, 19))
-            {
-                StopMusicStream(background);
-                PlaySound(shipCrash);
-                DefeatPlayer();
-                score = 0;
-            }
-            if (destroyedMeteorsCount == setupBigmeteor + setupMidmeteor + setupSmallmeteor) {
-                angulogrados = (180 / PI) * angulosradianes - 270;
-                DrawTexturePro(ship, sourceRec, destRec, Origin, enemy[i].rotation, BLUE);
-            }
-            else
-            {
-                DrawTexturePro(ship, sourceRec, destRec, Origin, enemy[i].rotation, RED);
-            }
-
-            enemy[i].rotation = angulogrados;
-
-        }
-        if (enemy[i].active == false)
-        {
-            destroyedMeteorsCount++;
-        }
-    }
-}
-
+//LOGIC PLAYER
 void PlayerDraw() {
     int framewidth = ship.width;
     int frameheight = ship.height;
    
-    Rectangle sourceRec = { 5.0f,5.0f, (float)framewidth,(float)frameheight };
+    Rectangle sourceRec = { 5.0f,5.0f, static_cast<float>(framewidth),static_cast<float>(frameheight) };
     Rectangle destRec = { player.position.x, player.position.y, 200, 200 };
-    Vector2 Origin = { (float)framewidth,(float)frameheight };
+    Vector2 Origin = { static_cast<float>(framewidth),static_cast<float>(frameheight )};
 
 
     DrawTextureEx(bgroundgame, { scrollingBack }, 0.0f, 2.0f, WHITE);
@@ -222,6 +94,7 @@ void PlayerDraw() {
         }
     }
     DrawPropeller(player);
+    DrawScore();
     HideCursor();
     DrawTexturePro(mira, { 5.0f,5.0f, (float)mira.width,(float)mira.height }, { (float)GetMouseX() - 17,(float)GetMouseY() - 5, 250,250 }, { (float)mira.width,(float)mira.height }, 0, WHITE);
 
@@ -231,7 +104,7 @@ void SetupPlayer() {
     StopMusicStream(background);
     shipHeight = (playerBaseSize / 2) / tanf(20 * DEG2RAD);
 
-    player.position = { (float)GetScreenWidth() / 2, (float)GetScreenHeight() / 2 };
+    player.position = { static_cast<float>(GetScreenWidth() / 2), static_cast<float>(GetScreenHeight() / 2 )};
     player.speed = { 0, 0 };
     player.acceleration = 40;
     player.rotation = 0;
@@ -240,7 +113,7 @@ void SetupPlayer() {
 
     for (int i = 0; i < maxShoots; i++)
     {
-        shoot[i].position = { (float)GetScreenWidth() / 2, (float)GetScreenHeight() / 2 };
+        shoot[i].position = { static_cast<float>(GetScreenWidth() / 2), static_cast<float>(GetScreenHeight() / 2 )};
         shoot[i].speed = { 0, 0 };
         shoot[i].radius = 4;
         shoot[i].active = false;
@@ -264,18 +137,57 @@ void ColisionWall() {
     else if (player.position.y < -(shipHeight)) player.position.y = GetScreenHeight() + shipHeight;
 }
 
+void LogicPlayer() {
+
+    float angulosradianes = atan2(static_cast<float>(GetMouseY()) - player.position.y, static_cast<float>(GetMouseX()) - player.position.x );
+    float angulogrados = (180 / PI) * angulosradianes - 270;
+
+    BackgroundGame();
+    UpdateMusicStream(background);
+
+    player.rotation = angulogrados;
+
+    if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT))
+    {
+        
+        if (CheckColissionsCircles(player.position.x,player.position.y,static_cast<float>(GetMouseX()), static_cast<float>(GetMouseY()),17,1))
+        {
+            player.speed.x = static_cast<float>(sin(player.rotation * DEG2RAD - 10) * playerSpeed);
+            player.speed.y = static_cast<float>(cos(player.rotation * DEG2RAD - 10) * playerSpeed);
+        }
+        else
+        {
+            player.speed.x = sin(player.rotation * DEG2RAD + 0.3f) * playerSpeed;
+            player.speed.y = cos(player.rotation * DEG2RAD + 0.3f) * playerSpeed;
+            if (player.acceleration < 1) player.acceleration += 0.01f;
+        }
+
+    }
+    else
+    {
+        if (player.acceleration > 0) player.acceleration = player.acceleration;
+        else if (player.acceleration < 0) player.acceleration = 0;
+    }
+
+    player.position.x += (player.speed.x * player.acceleration) * GetFrameTime();
+    player.position.y -= (player.speed.y * player.acceleration) * GetFrameTime();
+   
+}
+
+
+//LOGIC SHOOT
 void LogicShoot() {
-    
+
     if (!powerUp.active && checkPower && powerUp.lifeSpawn > 0)
     {
-       
+
         powerUp.lifeSpawn++;
         if (IsKeyPressed(KEY_SPACE) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
         {
-            for (int j = 0; j < maxShoots *10; j++)
+            for (int j = 0; j < maxShoots * 10; j++)
             {
                 for (int i = 0; i < maxShoots; i++)
-                {      
+                {
                     if (!shoot[i].active)
                     {
                         PlaySound(shipShoot);
@@ -368,44 +280,8 @@ void LogicShoot() {
 
 }
 
-void LogicPlayer() {
 
-    float angulosradianes = atan2(static_cast<float>(GetMouseY()) - player.position.y, static_cast<float>(GetMouseX()) - player.position.x );
-    float angulogrados = (180 / PI) * angulosradianes - 270;
-
-    BackgroundGame();
-    UpdateMusicStream(background);
-
-    player.rotation = angulogrados;
-
-    if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT))
-    {
-        
-        if (CheckColissionsCircles(player.position.x,player.position.y,static_cast<float>(GetMouseX()), static_cast<float>(GetMouseY()),17,1))
-        {
-            player.speed.x = static_cast<float>(sin(player.rotation * DEG2RAD - 10) * playerSpeed);
-            player.speed.y = static_cast<float>(cos(player.rotation * DEG2RAD - 10) * playerSpeed);
-        }
-        else
-        {
-            player.speed.x = sin(player.rotation * DEG2RAD + 0.3f) * playerSpeed;
-            player.speed.y = cos(player.rotation * DEG2RAD + 0.3f) * playerSpeed;
-            if (player.acceleration < 1) player.acceleration += 0.01f;
-        }
-
-    }
-    else
-    {
-        if (player.acceleration > 0) player.acceleration = player.acceleration;
-        else if (player.acceleration < 0) player.acceleration = 0;
-    }
-
-    player.position.x += (player.speed.x * player.acceleration) * GetFrameTime();
-    player.position.y -= (player.speed.y * player.acceleration) * GetFrameTime();
-   
-}
-
-//LOGIC ASTEROIDS/PLAYER
+//LOGIC ASTEROIDS
 void SetupMeteor(bool isVictory) {
     float posx;
     float posy;
@@ -495,8 +371,8 @@ void DrawMeteors() {
     int framewidth = meteorTexture.width;
     int frameheight = meteorTexture.height;
 
-    Rectangle sourceRec = { 5.0f,5.0f, (float)framewidth,(float)frameheight };
-    Vector2 Origin = { (float)framewidth,(float)frameheight };
+    Rectangle sourceRec = { 5.0f,5.0f, static_cast<float>(framewidth),static_cast<float>(frameheight) };
+    Vector2 Origin = { static_cast<float>(framewidth),static_cast<float>(frameheight) };
     for (int i = 0; i < setupBigmeteor; i++)
     {
         Rectangle destRecBig = { bigMeteor[i].position.x, bigMeteor[i].position.y, 250, 200
@@ -515,7 +391,7 @@ void DrawMeteors() {
 
     for (int i = 0; i < setupSmallmeteor; i++)
     {
-        Vector2 Originsmall = { (float)framewidth - 70,(float)frameheight - 60 };
+        Vector2 Originsmall = { static_cast<float>(framewidth - 70),static_cast<float>(frameheight - 60) };
         Rectangle destRecSmall = { smallMeteor[i].position.x, smallMeteor[i].position.y, 80, 80 };
         if (smallMeteor[i].active)
             DrawTexturePro(meteorTexture, sourceRec, destRecSmall, Originsmall, smallMeteor[i].position.x + smallMeteor[i].position.y, WHITE);
@@ -839,5 +715,136 @@ void PowerUpLogic() {
         {
             powerUp2.active = true;
         }
+    }
+}
+
+//LOGIC ENEMY
+void EnemySetup() {
+    for (int i = 0; i < MaxEnemy; i++)
+    {
+        enemy[i].position = { static_cast<float>(GetScreenWidth()) / 2, static_cast<float>(GetScreenHeight()) / 2 };
+        enemy[i].speed = { 0, 0 };
+        enemy[i].acceleration = 40;
+        enemy[i].rotation = 0;
+        enemy[i].active = true;
+
+        float posx;
+        float posy;
+        bool correctRange = false;
+
+        posx = static_cast<float>(GetRandomValue(0, GetScreenWidth()));
+
+        while (!correctRange)
+        {
+            if (posx > GetScreenWidth() / 2 - 150 && posx < GetScreenWidth() / 2 + 150) posx = static_cast<float>(GetRandomValue(0, GetScreenWidth()));
+            else correctRange = true;
+        }
+
+        correctRange = false;
+
+        posy = static_cast<float>(GetRandomValue(0, GetScreenHeight()));
+
+        while (!correctRange)
+        {
+            if (posy > GetScreenHeight() / 2 - 150 && posy < GetScreenHeight() / 2 + 150)  posy = static_cast<float>(GetRandomValue(0, GetScreenHeight()));
+            else correctRange = true;
+        }
+
+        enemy[i].position = { posx, posy };
+    }
+}
+
+void LogicEnemy() {
+    for (int i = 0; i < MaxEnemy; i++)
+    {
+
+        enemy[i].speed.x = sin(enemy[i].rotation * DEG2RAD) * playerSpeed;
+        enemy[i].speed.y = cos(enemy[i].rotation * DEG2RAD) * playerSpeed;
+
+        enemy[i].position.x += (enemy[i].speed.x * player.acceleration / 4) * GetFrameTime();
+        enemy[i].position.y -= (enemy[i].speed.y * player.acceleration / 4) * GetFrameTime();
+
+        if (enemy[i].position.x > GetScreenWidth() + shipHeight) {
+            enemy[i].active = false;
+        }
+        else if (enemy[i].position.x < -(shipHeight)) {
+            enemy[i].active = false;
+        }
+
+        if (enemy[i].position.y > (GetScreenHeight() + shipHeight)) {
+            enemy[i].active = false;
+        }
+        else if (enemy[i].position.y < -(shipHeight)) {
+            enemy[i].active = false;
+        }
+    }
+}
+
+void DrawEnemy() {
+    int framewidth = ship.width;
+    int frameheight = ship.height;
+
+    for (int i = 0; i < MaxEnemy; i++)
+    {
+        float angulosradianes = atan2(enemy[i].position.y - player.position.y, enemy[i].position.x - player.position.x);
+        float angulogrados = (180 / PI) * angulosradianes - 90;
+
+
+        Rectangle sourceRec = { 5.0f,5.0f, static_cast<float>(framewidth),static_cast<float>(frameheight) };
+        Rectangle destRec = { enemy[i].position.x, enemy[i].position.y, 200, 200 };
+        Vector2 Origin = { static_cast<float>(framewidth),static_cast<float>(frameheight) };
+
+        if (enemy[i].active)
+        {
+            if (CheckColissionsCircles(enemy[i].position.x, enemy[i].position.y, player.position.x, player.position.y, 25, 19))
+            {
+                StopMusicStream(background);
+                PlaySound(shipCrash);
+                DefeatPlayer();
+                score = 0;
+            }
+            if (destroyedMeteorsCount == setupBigmeteor + setupMidmeteor + setupSmallmeteor) {
+                angulogrados = (180 / PI) * angulosradianes - 270;
+                DrawTexturePro(ship, sourceRec, destRec, Origin, enemy[i].rotation, BLUE);
+            }
+            else
+            {
+                DrawTexturePro(ship, sourceRec, destRec, Origin, enemy[i].rotation, RED);
+            }
+
+            enemy[i].rotation = angulogrados;
+
+        }
+        if (enemy[i].active == false)
+        {
+            destroyedMeteorsCount++;
+        }
+    }
+}
+
+
+//SCORE
+void DrawScoreMenu() {
+    score = 0;
+
+    if (maxScore > 0)
+    {
+        DrawText(TextFormat("Max. Puntuacion: %i ", maxScore), GetScreenWidth() / 2 - 300, 10, 60, RED);
+    }
+}
+
+void DrawScore() {
+    DrawText(TextFormat("Max. Puntuacion: %i ", maxScore), GetScreenWidth() - 350, 10, 30, RED);
+    DrawText(TextFormat("Puntuacion: %i ", score), 10, 10, 20, WHITE);
+    DrawText(TextFormat("/ %i ", setupBigmeteor + setupMidmeteor + setupSmallmeteor + 1), GetScreenWidth() - 430, 80, 30, WHITE);
+    DrawText(TextFormat("Contador: %i ", destroyedMeteorsCount), GetScreenWidth() - 630, 80, 30, WHITE);
+    DrawText(TextFormat("Nivel: %i ", level), GetScreenWidth() - 750, 10, 20, WHITE);
+    if (maxScore < score)
+    {
+        maxScore = score;
+    }
+    if (maxScore == score && maxScore != 0)
+    {
+        DrawText("NUEVO RECORD", GetScreenWidth() - 630, 10, 30, RED);
     }
 }

@@ -346,7 +346,7 @@ void Options(Rectangle mousepos, Rectangle options) {
             {
                 
                 ClearBackground(BLACK);
-                DrawText("(SPACE) Salir", 820, 1, 30, WHITE);
+                DrawText("(SPACE) Salir", 800, 1, 30, WHITE);
                 PlayMusicMenu(isMenu);             
                 Rectangle mouseposition = { (float)GetMouseX(), (float)GetMouseY(), 1, 1 };
                 Rectangle fullscren = { screenWidth / 2 - 240, screenHeight / 2 - 270, 500, 100 };
