@@ -49,6 +49,7 @@ void SetupGame(bool isVictory)
 {
     BeginDrawing();
     SetupMeteor(isVictory);
+    PropellerSetup();
     EnemySetup();
     SetupPlayer();
     PowerUpsSetup();
@@ -347,7 +348,7 @@ void Options(Rectangle mousepos, Rectangle options) {
                 ClearBackground(BLACK);
                 DrawText("(SPACE) Salir", 820, 1, 30, WHITE);
                 PlayMusicMenu(isMenu);             
-                Rectangle mousepos = { (float)GetMouseX(), (float)GetMouseY(), 1, 1 };
+                Rectangle mouseposition = { (float)GetMouseX(), (float)GetMouseY(), 1, 1 };
                 Rectangle fullscren = { screenWidth / 2 - 240, screenHeight / 2 - 270, 500, 100 };
                 Rectangle defaultscreen = { screenWidth / 2 - 240, screenHeight / 2 - 70, 500, 100 };
 
@@ -355,7 +356,7 @@ void Options(Rectangle mousepos, Rectangle options) {
 
                 DrawText("Resolucion de Pantalla", screenWidth / 2 - 280, screenHeight / 2 - 350, 50, WHITE);
 
-                if (CheckCollisionRecs(mousepos, fullscren) && !isOnOption)
+                if (CheckCollisionRecs(mouseposition, fullscren) && !isOnOption)
                 {
                     DrawRectangleRec(fullscren, RED);
                     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
@@ -375,7 +376,7 @@ void Options(Rectangle mousepos, Rectangle options) {
 
 
                 
-                if (CheckCollisionRecs(mousepos, defaultscreen) && isOnOption)
+                if (CheckCollisionRecs(mouseposition, defaultscreen) && isOnOption)
                 {
                     DrawRectangleRec(defaultscreen, RED);
                     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))

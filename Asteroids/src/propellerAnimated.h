@@ -20,6 +20,6 @@ static Rectangle frameRec;
 
 void PropellerLogic();
 void PropellerSetup();
-void DrawPropeller(Player& player);
+void DrawPropeller(Player& playerx);
 void LoadResourcePropeller();
 void UnloadResourcePropeller();

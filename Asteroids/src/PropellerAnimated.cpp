@@ -14,13 +14,13 @@ void UnloadResourcePropeller() {
 }
 
 void PropellerSetup() {
-    int currentFrame = 0;
-    int currentLine = 0;
+    currentFrame = 0;
+    currentLine = 0;
 
-    Vector2 position = { 0.0f, 0.0f };
+    position = { 0.0f, 0.0f };
 
-    bool active = false;
-    int framesCounter = 0;
+    active = false;
+    framesCounter = 0;
 }
 
 void PropellerLogic() {
@@ -57,8 +57,7 @@ void PropellerLogic() {
     frameRec.y = frameHeight * currentLine;
 }
 
-void DrawPropeller(Player& player) {
-    PropellerSetup();
+void DrawPropeller(Player& playerx) {
     PropellerLogic();
-    if (active)  DrawTexturePro(propeller, frameRec, { player.position.x, player.position.y, 50, 50 }, { (float)frameWidth - 30, (float)frameHeight - 50 }, player.rotation, WHITE);;
+    if (active)  DrawTexturePro(propeller, frameRec, { playerx.position.x, playerx.position.y, 50, 50 }, { (float)frameWidth - 30, (float)frameHeight - 50 }, playerx.rotation, WHITE);;
 }

@@ -17,7 +17,7 @@ void LoadResourcesGame() {
     shootexture = LoadTexture("rsc/shoot.png");
     SetSoundVolume(meteorImpact, -0.05f);
     SetSoundVolume(shipCrash, -0.05f);
-    SetSoundVolume(shipShoot, -0.3);
+    SetSoundVolume(shipShoot, static_cast<float>(-0.3));
     SetMusicVolume(background, -0.1f);
     LoadResourcePropeller();
 }
@@ -58,21 +58,21 @@ void EnemySetup() {
         float posy;
         bool correctRange = false;
 
-        posx = GetRandomValue(0, GetScreenWidth());
+        posx = static_cast<float>(GetRandomValue(0, GetScreenWidth()));
 
         while (!correctRange)
         {
-            if (posx > GetScreenWidth() / 2 - 150 && posx < GetScreenWidth() / 2 + 150) posx = GetRandomValue(0, GetScreenWidth());
+            if (posx > GetScreenWidth() / 2 - 150 && posx < GetScreenWidth() / 2 + 150) posx = static_cast<float>(GetRandomValue(0, GetScreenWidth()));
             else correctRange = true;
         }
 
         correctRange = false;
 
-        posy = GetRandomValue(0, GetScreenHeight());
+        posy = static_cast<float>(GetRandomValue(0, GetScreenHeight()));
 
         while (!correctRange)
         {
-            if (posy > GetScreenHeight() / 2 - 150 && posy < GetScreenHeight() / 2 + 150)  posy = GetRandomValue(0, GetScreenHeight());
+            if (posy > GetScreenHeight() / 2 - 150 && posy < GetScreenHeight() / 2 + 150)  posy = static_cast<float>(GetRandomValue(0, GetScreenHeight()));
             else correctRange = true;
         }
 
@@ -207,8 +207,8 @@ void PlayerDraw() {
         for (int i = 0; i < maxShoots; i++)
         {
             if (shoot[i].active) {
-                DrawTexture(shootexture, shoot[i].position.x - 50, shoot[i].position.y - 50, GREEN);
-                DrawTexture(shootexture, shoot[i].position.x - 50, shoot[i].position.y - 50, GREEN);
+                DrawTexture(shootexture, static_cast<int>(shoot[i].position.x - 50), static_cast<int>(shoot[i].position.y - 50), GREEN);
+                DrawTexture(shootexture, static_cast<int>(shoot[i].position.x - 50), static_cast<int>(shoot[i].position.y - 50), GREEN);
             }
         }
     }
@@ -217,7 +217,7 @@ void PlayerDraw() {
         for (int i = 0; i < maxShoots; i++)
         {
             if (shoot[i].active) {
-                DrawTexture(shootexture, shoot[i].position.x - 50, shoot[i].position.y - 50, WHITE);
+                DrawTexture(shootexture, static_cast<int>(shoot[i].position.x - 50), static_cast<int>(shoot[i].position.y - 50), WHITE);
             }
         }
     }
@@ -272,7 +272,7 @@ void LogicShoot() {
         powerUp.lifeSpawn++;
         if (IsKeyPressed(KEY_SPACE) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
         {
-            for (int i = 0; i < maxShoots *10; i++)
+            for (int j = 0; j < maxShoots *10; j++)
             {
                 for (int i = 0; i < maxShoots; i++)
                 {      
@@ -281,8 +281,8 @@ void LogicShoot() {
                         PlaySound(shipShoot);
                         shoot[i].position = { player.position.x + sin(player.rotation * DEG2RAD) * (shipHeight), player.position.y - cos(player.rotation * DEG2RAD) * (shipHeight) };
                         shoot[i].active = true;
-                        shoot[i].speed.x = 1.5 * sin(player.rotation * DEG2RAD) * playerSpeed;
-                        shoot[i].speed.y = 1.5 * cos(player.rotation * DEG2RAD) * playerSpeed;
+                        shoot[i].speed.x = static_cast<float>(1.5 * sin(player.rotation * DEG2RAD) * playerSpeed);
+                        shoot[i].speed.y = static_cast<float>(1.5 * cos(player.rotation * DEG2RAD) * playerSpeed);
                         shoot[i].rotation = player.rotation;
                         break;
                     }
@@ -300,8 +300,8 @@ void LogicShoot() {
                 PlaySoundMulti(shipShoot);
                 shoot[i].position = { player.position.x + sin(player.rotation * DEG2RAD) * (shipHeight), player.position.y - cos(player.rotation * DEG2RAD) * (shipHeight) };
                 shoot[i].active = true;
-                shoot[i].speed.x = 1.5 * sin(player.rotation * DEG2RAD) * playerSpeed;
-                shoot[i].speed.y = 1.5 * cos(player.rotation * DEG2RAD) * playerSpeed;
+                shoot[i].speed.x = static_cast<float>(1.5 * sin(player.rotation * DEG2RAD) * playerSpeed);
+                shoot[i].speed.y = static_cast<float>(1.5 * cos(player.rotation * DEG2RAD) * playerSpeed);
                 shoot[i].rotation = player.rotation;
                 break;
             }
@@ -370,7 +370,7 @@ void LogicShoot() {
 
 void LogicPlayer() {
 
-    float angulosradianes = atan2(GetMouseY() - player.position.y, GetMouseX() - player.position.x );
+    float angulosradianes = atan2(static_cast<float>(GetMouseY()) - player.position.y, static_cast<float>(GetMouseX()) - player.position.x );
     float angulogrados = (180 / PI) * angulosradianes - 270;
 
     BackgroundGame();
@@ -381,10 +381,10 @@ void LogicPlayer() {
     if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT))
     {
         
-        if (CheckColissionsCircles(player.position.x,player.position.y,GetMouseX(),GetMouseY(),17,1))
+        if (CheckColissionsCircles(player.position.x,player.position.y,static_cast<float>(GetMouseX()), static_cast<float>(GetMouseY()),17,1))
         {
-            player.speed.x = sin(player.rotation * DEG2RAD - 10) * playerSpeed;
-            player.speed.y = cos(player.rotation * DEG2RAD - 10) * playerSpeed;
+            player.speed.x = static_cast<float>(sin(player.rotation * DEG2RAD - 10) * playerSpeed);
+            player.speed.y = static_cast<float>(cos(player.rotation * DEG2RAD - 10) * playerSpeed);
         }
         else
         {
@@ -429,36 +429,36 @@ void SetupMeteor(bool isVictory) {
     }
     for (int i = 0; i < setupBigmeteor; i++)
     {
-        posx = GetRandomValue(0, GetScreenWidth());
+        posx = static_cast<float>(GetRandomValue(0, GetScreenWidth()));
 
         while (!correctRange)
         {
-            if (posx > GetScreenWidth() / 2 - 150 && posx < GetScreenWidth() / 2 + 150) posx = GetRandomValue(0, GetScreenWidth());
+            if (posx > GetScreenWidth() / 2 - 150 && posx < GetScreenWidth() / 2 + 150) posx = static_cast<float>(GetRandomValue(0, GetScreenWidth()));
             else correctRange = true;
         }
 
         correctRange = false;
 
-        posy = GetRandomValue(0, GetScreenHeight());
+        posy = static_cast<float>(GetRandomValue(0, GetScreenHeight()));
 
         while (!correctRange)
         {
-            if (posy > GetScreenHeight() / 2 - 150 && posy < GetScreenHeight() / 2 + 150)  posy = GetRandomValue(0, GetScreenHeight());
+            if (posy > GetScreenHeight() / 2 - 150 && posy < GetScreenHeight() / 2 + 150)  posy = static_cast<float>(GetRandomValue(0, GetScreenHeight()));
             else correctRange = true;
         }
 
         bigMeteor[i].position = { posx, posy };
 
         correctRange = false;
-        velx = GetRandomValue(-speedMeteros, speedMeteros);
-        vely = GetRandomValue(-speedMeteros, speedMeteros);
+        velx = static_cast<float>(GetRandomValue(-speedMeteros, speedMeteros));
+        vely = static_cast<float>(GetRandomValue(-speedMeteros, speedMeteros));
 
         while (!correctRange)
         {
             if (velx == 0 && vely == 0)
             {
-                velx = GetRandomValue(-speedMeteros, speedMeteros);
-                vely = GetRandomValue(-speedMeteros, speedMeteros);
+                velx = static_cast<float>(GetRandomValue(-speedMeteros, speedMeteros));
+                vely = static_cast<float>(GetRandomValue(-speedMeteros, speedMeteros));
             }
             else correctRange = true;
         }
@@ -722,27 +722,27 @@ void PowerUpsSetup() {
     powerUp.active = false;
     powerUp2.active = false;
 
-    posx = GetRandomValue(0, GetScreenWidth());
-    posx2 = GetRandomValue(0, GetScreenWidth());
+    posx = static_cast<float>(GetRandomValue(0, GetScreenWidth()));
+    posx2 = static_cast<float>(GetRandomValue(0, GetScreenWidth()));
 
     while (!correctRange)
     {
-        if (posx > GetScreenWidth() / 2 && posx < GetScreenWidth() / 2) posx = GetRandomValue(0, GetScreenWidth() - 100);
+        if (posx > GetScreenWidth() / 2 && posx < GetScreenWidth() / 2) posx = static_cast<float>(GetRandomValue(0, GetScreenWidth()) - 100);
         else correctRange = true;
-        if (posx2 > GetScreenWidth() / 2 && posx2 < GetScreenWidth() / 2) posx2 = GetRandomValue(0, GetScreenWidth() - 100);
+        if (posx2 > GetScreenWidth() / 2 && posx2 < GetScreenWidth() / 2) posx2 = static_cast<float>(GetRandomValue(0, GetScreenWidth()) - 100);
         else correctRange = true;
     }
 
     correctRange = false;
 
-    posy = GetRandomValue(0, GetScreenHeight());
-    posy2 = GetRandomValue(0, GetScreenHeight());
+    posy = static_cast<float>(GetRandomValue(0, GetScreenHeight()));
+    posy2 = static_cast<float>(GetRandomValue(0, GetScreenHeight()));
 
     while (!correctRange)
     {
-        if (posy2 > GetScreenHeight() / 2 && posy2 < GetScreenHeight() / 2)  posy2 = GetRandomValue(0, GetScreenHeight() - 100);
+        if (posy2 > GetScreenHeight() / 2 && posy2 < GetScreenHeight() / 2)  posy2 = static_cast<float>(GetRandomValue(0, GetScreenHeight()) - 100);
         else correctRange = true;
-        if (posy2 > GetScreenHeight() / 2 && posy2 < GetScreenHeight() / 2)  posy2 = GetRandomValue(0, GetScreenHeight() - 100);
+        if (posy2 > GetScreenHeight() / 2 && posy2 < GetScreenHeight() / 2)  posy2 = static_cast<float>(GetRandomValue(0, GetScreenHeight()) - 100);
         else correctRange = true;
     }
 
@@ -767,13 +767,13 @@ void PowerUpDraw() {
 
     if (powerUp.active)
     {
-        DrawCircle(powerUp.position.x, powerUp.position.y, powerUp.radius, GREEN);
+        DrawCircle(static_cast<int>(powerUp.position.x), static_cast<int>(powerUp.position.y), powerUp.radius, GREEN);
         DrawTextureEx(shootexture, { powerUp.position.x - 197,powerUp.position.y - 197 }, 0, 4, GREEN);
     }
 
     if (powerUp2.active)
     {
-        DrawCircle(powerUp2.position.x, powerUp2.position.y, powerUp2.radius, YELLOW);
+        DrawCircle(static_cast<int>(powerUp2.position.x), static_cast<int>(powerUp2.position.y), powerUp2.radius, YELLOW);
         DrawTextureEx(ship, { powerUp2.position.x + 97,powerUp2.position.y - 105 }, 90, 2, YELLOW);
     }
 }
