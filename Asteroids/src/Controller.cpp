@@ -3,6 +3,8 @@
 #include "powerUps.h"
 #include "meteor.h"
 #include "assetsGame.h"
+
+#include "raymath.h"
 #include <cmath>
 
 void LoadResourcesGame() {
@@ -106,7 +108,7 @@ void SetupPlayer() {
 
     player.position = { static_cast<float>(GetScreenWidth() / 2), static_cast<float>(GetScreenHeight() / 2 )};
     player.speed = { 0, 0 };
-    player.acceleration = 40;
+    player.accelerationPlayer = { 0, 0 };
     player.rotation = 0;
     player.color = LIGHTGRAY;
 
@@ -147,30 +149,24 @@ void LogicPlayer() {
 
     player.rotation = angulogrados;
 
+    float VectorDireccionX = (GetMouseX() - player.position.x);
+    float VectorDireccionY = (GetMouseY() - player.position.y);
+    Vector2 VectorNormalizado = Vector2Normalize({ VectorDireccionX,VectorDireccionY });
+
     if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT))
     {
-        
-        if (CheckColissionsCircles(player.position.x,player.position.y,static_cast<float>(GetMouseX()), static_cast<float>(GetMouseY()),17,1))
-        {
-            player.speed.x = static_cast<float>(sin(player.rotation * DEG2RAD - 10) * playerSpeed);
-            player.speed.y = static_cast<float>(cos(player.rotation * DEG2RAD - 10) * playerSpeed);
-        }
-        else
-        {
-            player.speed.x = sin(player.rotation * DEG2RAD + 0.3f) * playerSpeed;
-            player.speed.y = cos(player.rotation * DEG2RAD + 0.3f) * playerSpeed;
-            if (player.acceleration < 1) player.acceleration += 0.01f;
-        }
+        player.accelerationPlayer.x += VectorNormalizado.x * 3;
+        player.accelerationPlayer.y += VectorNormalizado.y * 3;
 
+       
     }
     else
     {
-        if (player.acceleration > 0) player.acceleration = player.acceleration;
-        else if (player.acceleration < 0) player.acceleration = 0;
+        player.accelerationPlayer = player.accelerationPlayer;
     }
 
-    player.position.x += (player.speed.x * player.acceleration) * GetFrameTime();
-    player.position.y -= (player.speed.y * player.acceleration) * GetFrameTime();
+    player.position.x += player.accelerationPlayer.x * GetFrameTime();
+    player.position.y += player.accelerationPlayer.y * GetFrameTime();
    
 }
 
@@ -193,8 +189,8 @@ void LogicShoot() {
                         PlaySound(shipShoot);
                         shoot[i].position = { player.position.x + sin(player.rotation * DEG2RAD) * (shipHeight), player.position.y - cos(player.rotation * DEG2RAD) * (shipHeight) };
                         shoot[i].active = true;
-                        shoot[i].speed.x = static_cast<float>(1.5 * sin(player.rotation * DEG2RAD) * playerSpeed);
-                        shoot[i].speed.y = static_cast<float>(1.5 * cos(player.rotation * DEG2RAD) * playerSpeed);
+                        shoot[i].speed.x = static_cast<float>(1.5 * sin(player.rotation * DEG2RAD) * shootSpeed);
+                        shoot[i].speed.y = static_cast<float>(1.5 * cos(player.rotation * DEG2RAD) * shootSpeed);
                         shoot[i].rotation = player.rotation;
                         break;
                     }
@@ -212,8 +208,8 @@ void LogicShoot() {
                 PlaySoundMulti(shipShoot);
                 shoot[i].position = { player.position.x + sin(player.rotation * DEG2RAD) * (shipHeight), player.position.y - cos(player.rotation * DEG2RAD) * (shipHeight) };
                 shoot[i].active = true;
-                shoot[i].speed.x = static_cast<float>(1.5 * sin(player.rotation * DEG2RAD) * playerSpeed);
-                shoot[i].speed.y = static_cast<float>(1.5 * cos(player.rotation * DEG2RAD) * playerSpeed);
+                shoot[i].speed.x = static_cast<float>(1.5 * sin(player.rotation * DEG2RAD) * shootSpeed);
+                shoot[i].speed.y = static_cast<float>(1.5 * cos(player.rotation * DEG2RAD) * shootSpeed);
                 shoot[i].rotation = player.rotation;
                 break;
             }
@@ -724,7 +720,6 @@ void EnemySetup() {
     {
         enemy[i].position = { static_cast<float>(GetScreenWidth()) / 2, static_cast<float>(GetScreenHeight()) / 2 };
         enemy[i].speed = { 0, 0 };
-        enemy[i].acceleration = 40;
         enemy[i].rotation = 0;
         enemy[i].active = true;
 
@@ -758,11 +753,11 @@ void LogicEnemy() {
     for (int i = 0; i < MaxEnemy; i++)
     {
 
-        enemy[i].speed.x = sin(enemy[i].rotation * DEG2RAD) * playerSpeed;
-        enemy[i].speed.y = cos(enemy[i].rotation * DEG2RAD) * playerSpeed;
+        enemy[i].speed.x = sin(enemy[i].rotation * DEG2RAD) * enemySpeed;
+        enemy[i].speed.y = cos(enemy[i].rotation * DEG2RAD) * enemySpeed;
 
-        enemy[i].position.x += (enemy[i].speed.x * player.acceleration / 4) * GetFrameTime();
-        enemy[i].position.y -= (enemy[i].speed.y * player.acceleration / 4) * GetFrameTime();
+        enemy[i].position.x += (enemy[i].speed.x * 5) * GetFrameTime();
+        enemy[i].position.y -= (enemy[i].speed.y * 5) * GetFrameTime();
 
         if (enemy[i].position.x > GetScreenWidth() + shipHeight) {
             enemy[i].active = false;

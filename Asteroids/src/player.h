@@ -4,7 +4,7 @@
 struct Player {
     Vector2 position;
     Vector2 speed;
-    float acceleration;
+    Vector2 accelerationPlayer;  
     float rotation;
     Color color;
     bool active;
@@ -31,7 +31,8 @@ static Player enemy[MaxEnemy];
 static Shoot shoot[maxShoots];
 
 static float playerBaseSize = 20.0f;
-static float playerSpeed = 6.0f;
+static float shootSpeed = 6.0f;
+static float enemySpeed = 15.0f;
 static float shipHeight = 0.0f;
 
 void PlayerDraw();
