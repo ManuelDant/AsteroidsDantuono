@@ -100,7 +100,7 @@ void PlayerDraw() {
     DrawPropeller(player);
     DrawScore();
     HideCursor();
-    DrawTexturePro(mira, { 5.0f,5.0f, (float)mira.width,(float)mira.height }, { (float)GetMouseX() - 17,(float)GetMouseY() - 5, 250,250 }, { (float)mira.width,(float)mira.height }, 0, WHITE);
+    DrawTexturePro(mira, { 5.0f,5.0f, static_cast<float>(mira.width),static_cast<float>(mira.height) }, { static_cast<float>(GetMouseX() - 17),static_cast<float>(GetMouseY() - 5), 250,250 }, { static_cast<float>(mira.width),static_cast<float>(mira.height) }, 0, WHITE);
 
 }
 

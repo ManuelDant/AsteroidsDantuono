@@ -28,5 +28,7 @@ void Credits(Rectangle mousepos, Rectangle credits);
 void Rules(Rectangle mousepos, Rectangle rules);
 void MenuTexts();
 void DrawRules(int framesCounter);
+void CreditsOptions();
+void CreditsText();
 
 

@@ -266,28 +266,19 @@ void Credits(Rectangle mousepos, Rectangle credits) {
             framesCounter = 0;
             while (!exitGameplay && !WindowShouldClose())
             {
+                ClearBackground(BLACK);
                 PlayMusicMenu(isMenu);
-                int finalmessage = 10000;
-                const char message[700] = "Juego Creado por Manuel Dantuono \nTexturas de Asteroides, Nave y Disparos hechos por Manuel Dantuono\n\nSonido de Juego: ( Close Combat ) por Fredrik Ekstrom. \nwww.epidemicsound.com/track/vnourn9aT7/9\nSonido del Menu: (Fugent) por Lupus Nocte \nwww.epidemicsound.com/track/cAEBqYRFz0/  \nSonido de impacto 1: (Bomb Explosion 3) \nwww.epidemicsound.com/track/ZATPJMOSHa/ \nSonido de impacto 2: (Storefront Crash 1) \nwww.epidemicsound.com/track/lC2s9JHZqR/ \nImagen del Menu: \nclipart-library.com/clipart/space-free-png-image.htm \nImagen dentro del Gameplay: \nopengameart.org/content/space-parallax-background \n\n\n\nJuego hecho con Libreria Raylib.";
-                
-                if (IsKeyDown(KEY_SPACE))
-                {
-                    framesCounter = finalmessage + 1;
-                }
-                if (framesCounter > finalmessage)
+               
+                CreditsOptions();
+
+                CreditsText();
+              
+                DrawText("(SPACE) Salir", 800, 1, 30, WHITE);
+                if (IsKeyPressed(KEY_SPACE))
                 {
                     exitGameplay = true;
                 }
-
-                BeginDrawing();
-
-                if (IsKeyDown(KEY_ENTER)) framesCounter += 8;
-                else framesCounter += 4;
-
-                ClearBackground(BLACK);
-                DrawText(TextSubtext(message, 0, framesCounter / 5), 1, 1, 27, WHITE);
-                DrawText("(SPACE) Salida Rapida | (Enter) Mas velocidad.", 550, 1, 20, WHITE);
-                EndDrawing();
+                EndDrawing();           
             }
             
         }
