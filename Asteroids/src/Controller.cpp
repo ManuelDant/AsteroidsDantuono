@@ -5,7 +5,9 @@
 #include "assetsGame.h"
 
 #include "raymath.h"
+#include <fstream>
 #include <cmath>
+using namespace std;
 
 void LoadResourcesGame() {
     meteorTexture = LoadTexture("rsc/meteor.png");
@@ -287,16 +289,16 @@ void SetupMeteor(bool isVictory) {
 
     if (isVictory)
     {
-        setupBigmeteor += 2;
-        setupMidmeteor += 4;
-        setupSmallmeteor += 8;
+        setupBigmeteor += 1;
+        setupMidmeteor += 2;
+        setupSmallmeteor += 4;
         level++;
     }
     if (!isVictory)
     {
-        setupBigmeteor = 5;
-        setupMidmeteor = 10;
-        setupSmallmeteor = 20;
+        setupBigmeteor = 2;
+        setupMidmeteor = 4;
+        setupSmallmeteor = 8;
         level = 1;
     }
     for (int i = 0; i < setupBigmeteor; i++)
@@ -812,7 +814,7 @@ void DrawEnemy() {
         }
         if (enemy[i].active == false)
         {
-            destroyedMeteorsCount++;
+            destroyedMeteorsCount = setupBigmeteor + setupMidmeteor + setupSmallmeteor + MaxEnemy;
         }
     }
 }
@@ -820,18 +822,29 @@ void DrawEnemy() {
 
 //SCORE
 void DrawScoreMenu() {
-    score = 0;
-
-    if (maxScore > 0)
+    ifstream readMyFile("score.txt");
+    if (maxScore == 0)
     {
+        readMyFile >> maxScore;
+    }    
+    readMyFile.close();
+
+    ofstream creatMyFile("score.txt");
+    creatMyFile << maxScore;
+    
+    
+    if (maxScore > 0)
+    {    
         DrawText(TextFormat("Max. Puntuacion: %i ", maxScore), GetScreenWidth() / 2 - 300, 10, 60, RED);
     }
+    creatMyFile.close();
+   
 }
 
 void DrawScore() {
     DrawText(TextFormat("Max. Puntuacion: %i ", maxScore), GetScreenWidth() - 350, 10, 30, RED);
     DrawText(TextFormat("Puntuacion: %i ", score), 10, 10, 20, WHITE);
-    DrawText(TextFormat("/ %i ", setupBigmeteor + setupMidmeteor + setupSmallmeteor + 1), GetScreenWidth() - 430, 80, 30, WHITE);
+    DrawText(TextFormat("/ %i ", setupBigmeteor + setupMidmeteor + setupSmallmeteor + MaxEnemy ), GetScreenWidth() - 430, 80, 30, WHITE);
     DrawText(TextFormat("Contador: %i ", destroyedMeteorsCount), GetScreenWidth() - 630, 80, 30, WHITE);
     DrawText(TextFormat("Nivel: %i ", level), GetScreenWidth() - 750, 10, 20, WHITE);
     if (maxScore < score)

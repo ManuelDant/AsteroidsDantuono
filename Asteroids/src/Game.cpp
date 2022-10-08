@@ -35,6 +35,7 @@ void RunGame()
 
     while (!exitWindows && !WindowShouldClose())
     {
+
         Menu();
 
     }
