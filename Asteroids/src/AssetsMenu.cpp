@@ -11,7 +11,6 @@ void LoadResourcesMenu() {
     option = LoadTexture("rsc/option.png");
     menubg = LoadMusicStream("rsc/menubg.mp3");
     imgEnemy = LoadTexture("rsc/imageEnemy.png");
-    imgPowerUps = LoadTexture("rsc/imagePowerUps.png");
     controls = LoadTexture("rsc/controls.png");
 
     SetMusicVolume(menubg, -0.05f);
@@ -29,7 +28,6 @@ void UnloadResourcesMenu() {
     UnloadTexture(title);
     UnloadTexture(bground);
     UnloadTexture(imgEnemy);
-    UnloadTexture(imgPowerUps);
     UnloadTexture(controls);
 }
 
@@ -93,9 +91,9 @@ void DrawOptions(bool isOn) {
 }
 
 void DrawTitle() {
-    title.width = 1000;
-    title.height = 700;
-    DrawTexture(title, GetScreenWidth() / 2 - 500, GetScreenHeight() / 2 - 480, WHITE);
+    title.width = 1200;
+    title.height = 800;
+    DrawTexture(title, GetScreenWidth() / 2 - 635, GetScreenHeight() / 2 - 550, WHITE);
 }
 
 void BackgroundMenu() {
@@ -110,21 +108,16 @@ void DrawRules(int framesCounter) {
     switch (framesCounter)
     {
     case 1:
-        imgEnemy.width = 1050;
+        imgEnemy.width = 1000;
         imgEnemy.height = 768;
         DrawTexture(imgEnemy, 1, 1, WHITE);
-        DrawText("(ENTER O SPACE) para continuar", GetScreenWidth() / 2 - 100 , GetScreenHeight() / 2 - 240, 30, GREEN);
+        DrawText("(ENTER O SPACE) para continuar",  10 , 10, 30, GREEN);
         break;
     case 2:
-        imgPowerUps.width = 1050;
-        imgPowerUps.height = 768;
-        DrawTexture(imgPowerUps, 1, 1, WHITE);
-        break;
-    case 3:
         controls.width = 1050;
         controls.height = 768;
         DrawTexture(controls, 1, 1, WHITE);
-        break;
+        break;             
     }
 }
 

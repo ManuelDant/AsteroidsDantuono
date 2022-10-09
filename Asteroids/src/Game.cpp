@@ -310,7 +310,7 @@ void Rules(Rectangle mousepos, Rectangle rules) {
                 }
 
                 DrawRules(newImage);
-                if (newImage > 3)
+                if (newImage > 2)
                 {
                     exitGameplay = true;
                 }

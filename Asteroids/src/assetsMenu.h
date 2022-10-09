@@ -9,7 +9,6 @@ static Texture2D title;
 static Texture2D option;
 static Texture2D bground;
 static Texture2D imgEnemy;
-static Texture2D imgPowerUps;
 static Texture2D controls;
 
 void DrawTitle();

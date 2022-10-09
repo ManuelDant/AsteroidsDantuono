@@ -180,10 +180,8 @@ void LogicShoot() {
     {
 
         powerUp.lifeSpawn++;
-        if (IsKeyPressed(KEY_SPACE) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
-        {
-            for (int j = 0; j < maxShoots * 10; j++)
-            {
+        if (IsKeyDown(KEY_SPACE) || IsMouseButtonDown(MOUSE_BUTTON_LEFT))
+        {   
                 for (int i = 0; i < maxShoots; i++)
                 {
                     if (!shoot[i].active)
@@ -197,7 +195,7 @@ void LogicShoot() {
                         break;
                     }
                 }
-            }
+            
 
         }
     }
