@@ -106,7 +106,7 @@ void PlayerDraw() {
 
     if (isDebug)
     {
-        DrawCircle(player.position.x, player.position.y, 17, RED);
+        DrawCircle(static_cast<int>(player.position.x), static_cast<int>(player.position.y), 17, RED);
     }
 }
 
@@ -379,7 +379,7 @@ void DrawMeteors() {
     {
         if (isDebug)
         {
-            DrawCircle(bigMeteor[i].position.x, bigMeteor[i].position.y, bigMeteor[i].radius, GREEN);
+            DrawCircle(static_cast<int>(bigMeteor[i].position.x), static_cast<int>(bigMeteor[i].position.y), bigMeteor[i].radius, GREEN);
         }
 
         Rectangle destRecBig = { bigMeteor[i].position.x, bigMeteor[i].position.y, 250, 200
@@ -393,7 +393,7 @@ void DrawMeteors() {
     {
         if (isDebug)
         {
-            DrawCircle(mediumMeteor[i].position.x, mediumMeteor[i].position.y, mediumMeteor[i].radius, GREEN);
+            DrawCircle(static_cast<int>(mediumMeteor[i].position.x), static_cast<int>(mediumMeteor[i].position.y), mediumMeteor[i].radius, GREEN);
         }
         Rectangle destRecMid = { mediumMeteor[i].position.x, mediumMeteor[i].position.y, 190, 200 };
         if (mediumMeteor[i].active) DrawTexturePro(meteorTexture, sourceRec, destRecMid, Origin, mediumMeteor[i].position.x + mediumMeteor[i].position.y, WHITE);   
@@ -403,7 +403,7 @@ void DrawMeteors() {
     {
         if (isDebug)
         {
-            DrawCircle(smallMeteor[i].position.x, smallMeteor[i].position.y, smallMeteor[i].radius, GREEN);
+            DrawCircle(static_cast<int>(smallMeteor[i].position.x), static_cast<int>(smallMeteor[i].position.y), smallMeteor[i].radius, GREEN);
         }
         Vector2 Originsmall = { static_cast<float>(framewidth - 70),static_cast<float>(frameheight - 60) };
         Rectangle destRecSmall = { smallMeteor[i].position.x, smallMeteor[i].position.y, 80, 80 };
@@ -837,7 +837,7 @@ void DrawEnemy() {
 
         if (isDebug && enemy[i].active)
         {
-            DrawCircle(enemy[i].position.x, enemy[i].position.y, 25, BROWN);
+            DrawCircle(static_cast<int>(enemy[i].position.x), static_cast<int>(enemy[i].position.y), 25, BROWN);
         }
     }
 
