@@ -15,3 +15,4 @@ static Music background;
 void BackgroundGame();
 void LoadResourcesGame();
 void UnloadResourcesGame();
+void CheckDebug(bool check);

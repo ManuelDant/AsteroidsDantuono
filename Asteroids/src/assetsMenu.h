@@ -11,6 +11,7 @@ static Texture2D bground;
 static Texture2D imgEnemy;
 static Texture2D controls;
 
+
 void DrawTitle();
 void DrawOptionPlay(bool isOn);
 void DrawOptionRules(bool isOn);

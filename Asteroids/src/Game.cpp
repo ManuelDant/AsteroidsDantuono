@@ -16,6 +16,8 @@ bool exitGameplay = false;
 bool gameover = false;
 bool pause = false;
 bool isOnOption = false;
+bool isModeDebug = false;
+bool isOnOptionDebug = false;
 
 void SetupGame(bool isVictory);
 void DrawPause();
@@ -267,6 +269,7 @@ void Credits(Rectangle mousepos, Rectangle credits) {
             while (!exitGameplay && !WindowShouldClose())
             {
                 ClearBackground(BLACK);
+                BackgroundMenu();
                 PlayMusicMenu(isMenu);
                
                 CreditsOptions();
@@ -338,11 +341,13 @@ void Options(Rectangle mousepos, Rectangle options) {
             {
                 
                 ClearBackground(BLACK);
+                BackgroundMenu();
                 DrawText("(SPACE) Salir", 800, 1, 30, WHITE);
                 PlayMusicMenu(isMenu);             
                 Rectangle mouseposition = { (float)GetMouseX(), (float)GetMouseY(), 1, 1 };
                 Rectangle fullscren = { screenWidth / 2 - 240, screenHeight / 2 - 270, 500, 100 };
                 Rectangle defaultscreen = { screenWidth / 2 - 240, screenHeight / 2 - 70, 500, 100 };
+                Rectangle isDebugMode = { screenWidth / 2 - 240, screenHeight / 2 + 130, 500, 100 };
 
                 BeginDrawing();
 
@@ -364,9 +369,6 @@ void Options(Rectangle mousepos, Rectangle options) {
                 {
                     DrawRectangleRec(fullscren, WHITE);
                 }
-
-
-
                 
                 if (CheckCollisionRecs(mouseposition, defaultscreen) && isOnOption)
                 {
@@ -385,13 +387,40 @@ void Options(Rectangle mousepos, Rectangle options) {
                 {
                     DrawRectangleRec(defaultscreen, WHITE);
                 }
-                
-          
+
+
+
+                if (CheckCollisionRecs(mouseposition, isDebugMode) && isOnOptionDebug)
+                {
+                    DrawRectangleRec(isDebugMode, RED);
+                    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+                    {
+                        isOnOptionDebug = false;
+                        CheckDebug(false);
+
+                    }
+                }
+                else if (!isOnOptionDebug)
+                {
+                    DrawRectangleRec(isDebugMode, DARKBROWN);
+                    if (CheckCollisionRecs(mouseposition, isDebugMode))
+                    {
+                        DrawRectangleRec(isDebugMode, RED);
+                        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+                        {
+                            isOnOptionDebug = true;
+                            CheckDebug(true);
+                        }
+                    }
+                }
+                else
+                {
+                    DrawRectangleRec(isDebugMode, GREEN);
+                }
+
                 DrawText("FULLSCREEN", screenWidth / 2 - 150, screenHeight / 2 - 250, 50, BLACK);
                 DrawText("1024 X 768", screenWidth / 2 - 125, screenHeight / 2 - 50, 50, BLACK);
-
-
-
+                DrawText("MODO DEBUG", screenWidth / 2 - 155, screenHeight / 2 + 150, 50, BLACK);
                
 
                 if (IsKeyPressed(KEY_SPACE))

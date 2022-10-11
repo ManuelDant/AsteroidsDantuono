@@ -9,6 +9,8 @@
 #include <cmath>
 using namespace std;
 
+bool isDebug = false;
+
 void LoadResourcesGame() {
     meteorTexture = LoadTexture("rsc/meteor.png");
     ship = LoadTexture("rsc/ship.png");
@@ -102,6 +104,10 @@ void PlayerDraw() {
     HideCursor();
     DrawTexturePro(mira, { 5.0f,5.0f, static_cast<float>(mira.width),static_cast<float>(mira.height) }, { static_cast<float>(GetMouseX() - 17),static_cast<float>(GetMouseY() - 5), 250,250 }, { static_cast<float>(mira.width),static_cast<float>(mira.height) }, 0, WHITE);
 
+    if (isDebug)
+    {
+        DrawCircle(player.position.x, player.position.y, 17, RED);
+    }
 }
 
 void SetupPlayer() {
@@ -371,27 +377,38 @@ void DrawMeteors() {
     Vector2 Origin = { static_cast<float>(framewidth),static_cast<float>(frameheight) };
     for (int i = 0; i < setupBigmeteor; i++)
     {
+        if (isDebug)
+        {
+            DrawCircle(bigMeteor[i].position.x, bigMeteor[i].position.y, bigMeteor[i].radius, GREEN);
+        }
+
         Rectangle destRecBig = { bigMeteor[i].position.x, bigMeteor[i].position.y, 250, 200
         };
         if (bigMeteor[i].active) {
             DrawTexturePro(meteorTexture, sourceRec, destRecBig, Origin, bigMeteor[i].position.x + bigMeteor[i].position.y, WHITE);
-        }
+        }     
     }
 
     for (int i = 0; i < setupMidmeteor; i++)
     {
+        if (isDebug)
+        {
+            DrawCircle(mediumMeteor[i].position.x, mediumMeteor[i].position.y, mediumMeteor[i].radius, GREEN);
+        }
         Rectangle destRecMid = { mediumMeteor[i].position.x, mediumMeteor[i].position.y, 190, 200 };
-        if (mediumMeteor[i].active) DrawTexturePro(meteorTexture, sourceRec, destRecMid, Origin, mediumMeteor[i].position.x + mediumMeteor[i].position.y, WHITE);
-
+        if (mediumMeteor[i].active) DrawTexturePro(meteorTexture, sourceRec, destRecMid, Origin, mediumMeteor[i].position.x + mediumMeteor[i].position.y, WHITE);   
     }
 
     for (int i = 0; i < setupSmallmeteor; i++)
     {
+        if (isDebug)
+        {
+            DrawCircle(smallMeteor[i].position.x, smallMeteor[i].position.y, smallMeteor[i].radius, GREEN);
+        }
         Vector2 Originsmall = { static_cast<float>(framewidth - 70),static_cast<float>(frameheight - 60) };
         Rectangle destRecSmall = { smallMeteor[i].position.x, smallMeteor[i].position.y, 80, 80 };
         if (smallMeteor[i].active)
-            DrawTexturePro(meteorTexture, sourceRec, destRecSmall, Originsmall, smallMeteor[i].position.x + smallMeteor[i].position.y, WHITE);
-
+            DrawTexturePro(meteorTexture, sourceRec, destRecSmall, Originsmall, smallMeteor[i].position.x + smallMeteor[i].position.y, WHITE);    
     }
 
     if (destroyedMeteorsCount >= setupBigmeteor + setupMidmeteor + setupSmallmeteor + MaxEnemy) {
@@ -399,6 +416,7 @@ void DrawMeteors() {
         Victory(1);
     }
 
+    
 }
 
 void LogicMeteor() {
@@ -789,6 +807,8 @@ void DrawEnemy() {
         Rectangle destRec = { enemy[i].position.x, enemy[i].position.y, 200, 200 };
         Vector2 Origin = { static_cast<float>(framewidth),static_cast<float>(frameheight) };
 
+        
+
         if (enemy[i].active)
         {
             if (CheckColissionsCircles(enemy[i].position.x, enemy[i].position.y, player.position.x, player.position.y, 25, 19))
@@ -814,20 +834,26 @@ void DrawEnemy() {
         {
             destroyedMeteorsCount = setupBigmeteor + setupMidmeteor + setupSmallmeteor + MaxEnemy;
         }
+
+        if (isDebug && enemy[i].active)
+        {
+            DrawCircle(enemy[i].position.x, enemy[i].position.y, 25, BROWN);
+        }
     }
+
 }
 
 
 //SCORE
 void DrawScoreMenu() {
-    ifstream readMyFile("score.txt");
+    ifstream readMyFile("rsc/score.txt");
     if (maxScore == 0)
     {
         readMyFile >> maxScore;
     }    
     readMyFile.close();
 
-    ofstream creatMyFile("score.txt");
+    ofstream creatMyFile("rsc/score.txt");
     creatMyFile << maxScore;
     
     
@@ -853,4 +879,19 @@ void DrawScore() {
     {
         DrawText("NUEVO RECORD", GetScreenWidth() - 630, 10, 30, RED);
     }
+}
+
+
+//Mode Debug
+
+void CheckDebug(bool check) {
+    if (check)
+    {
+        isDebug = true;
+    }
+    else
+    {
+        isDebug = false;
+    }
+
 }
