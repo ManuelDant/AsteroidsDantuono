@@ -16,7 +16,6 @@ bool exitGameplay = false;
 bool gameover = false;
 bool pause = false;
 bool isOnOption = false;
-bool isModeDebug = false;
 bool isOnOptionDebug = false;
 
 void SetupGame(bool isVictory);
