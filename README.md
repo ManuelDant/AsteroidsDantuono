@@ -6,4 +6,4 @@ y Cambio de resolucion entre pantalla completa y modo ventana.
 
 # Link del juego en Itch.io
 
-manueldant.itch.io/asteroids
+https://manueldant.itch.io/asteroids
